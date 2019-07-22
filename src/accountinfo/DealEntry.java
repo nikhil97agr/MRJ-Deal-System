@@ -343,21 +343,21 @@ public class DealEntry extends javax.swing.JFrame {
 
         toList.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         toList.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Account" }));
-        jPanel1.add(toList, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 130, 211, 31));
+        jPanel1.add(toList, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 130, 211, 31));
 
         toLabel.setBackground(new java.awt.Color(0, 0, 0));
         toLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         toLabel.setText("RECEIVER");
-        jPanel1.add(toLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 130, 135, 33));
+        jPanel1.add(toLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 130, 135, 33));
 
         fromList.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         fromList.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Account" }));
-        jPanel1.add(fromList, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 130, 211, 31));
+        jPanel1.add(fromList, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 130, 211, 31));
 
         fromLabel.setBackground(new java.awt.Color(0, 0, 0));
         fromLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         fromLabel.setText("GIVER");
-        jPanel1.add(fromLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 130, 135, 33));
+        jPanel1.add(fromLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 130, 135, 33));
 
         amountInput.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         amountInput.addActionListener(new java.awt.event.ActionListener() {
@@ -501,6 +501,13 @@ public class DealEntry extends javax.swing.JFrame {
     }//GEN-LAST:event_backButtonActionPerformed
 
     private void printButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printButtonActionPerformed
+        DealData data = new DealData();
+        data.setsNo(sNoInput.getText());
+        if(!dealData.contains(data))
+        {
+            JOptionPane.showMessageDialog(this, "Record Not Found");
+            return;
+        }
         printData();
     }//GEN-LAST:event_printButtonActionPerformed
 
@@ -1131,21 +1138,26 @@ public class DealEntry extends javax.swing.JFrame {
             }
         }
         String address = "";
+        String brokerAddress ="";
         for(AccountData accData : accountData)
         {
             if(data.getFromName().equals(accData.getName()))
             {
                 address = accData.getAddress();
             }
-            if (data.getToName().equals(accData.getName())) {
+            if (data.getFromName().equals(accData.getName())) {
                 receiversPan = accData.getPan();
             }
             if(data.getBrokerName().equals(accData.getName()))
             {
                 brokersPan = accData.getPan();
             }
+            if(data.getBrokerName().equals(accData.getName()))
+            {
+                brokerAddress = accData.getAddress();
+            }
             
-            if(!address.isEmpty()&&!receiversPan.isEmpty()&&!brokersPan.isEmpty())
+            if(!address.isEmpty()&&!receiversPan.isEmpty()&&!brokersPan.isEmpty()&&!brokerAddress.isEmpty())
             {
                 break;
             }
@@ -1159,7 +1171,7 @@ public class DealEntry extends javax.swing.JFrame {
  
         String brokerageAccount = (String) brokerageAccountList.getSelectedItem();
         PrinterJob job = PrinterJob.getPrinterJob();
-        job.setPrintable(new OutputPrinter(data, brokerageAccount.equals("Select Account") ? "null" : brokerageAccount, address,brokersPan, receiversPan));
+        job.setPrintable(new OutputPrinter(data, brokerageAccount.equals("Select Account") ? "null" : brokerageAccount, address,brokersPan, receiversPan, brokerAddress));
         boolean doPrint = job.printDialog();
         if (doPrint) {
             try {
@@ -1210,7 +1222,6 @@ public class DealEntry extends javax.swing.JFrame {
     }
 
     private void calculateInterest() {
-        DecimalFormat df = new DecimalFormat(".##");
         double amount1 = 0.0;
         double rate1 = 0.0;
         double interest1;
@@ -1237,12 +1248,11 @@ public class DealEntry extends javax.swing.JFrame {
 //        System.out.println("Amount :"+amount1);
         interest1 = (amount1 * rate1 * duration) / 100f;
 //        System.out.println("Interest :"+interest1);
-        interestInput.setText("" + df.format(interest1));
-
+        interestInput.setText("" + Math.round(interest1));
         tds1 = (interest1 * 10f) / 100f;
-        tdsInput.setText("" + df.format(tds1));
+        tdsInput.setText("" + Math.round(tds1));
         net1 = interest1 - tds1;
-        netInput.setText("" + df.format(net1));
+        netInput.setText("" + Math.round(net1));
     }
 
 }

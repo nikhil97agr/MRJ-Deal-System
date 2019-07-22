@@ -16,10 +16,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -383,7 +386,7 @@ private void createList() {
     {
         return;
     }
-        format = new SimpleDateFormat("dd/MM/yyyy");
+        format = new SimpleDateFormat("dd-MM-yyyy");
         deals.entrySet().forEach((data) -> {
             DealData dd = data.getValue();
             if (!dd.getStatus().equals(Status.PAID) && !dd.getStatus().equals(Status.HOLD) && !dd.getStatus().equals(Status.INACTIVE)) {

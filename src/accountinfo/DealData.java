@@ -235,5 +235,10 @@ public class DealData {
         this.brokerTds = brokerTds;
     }
     
-    
+    @Override
+    public boolean equals(Object obj)
+    {
+        DealData data = (DealData)obj;
+        return sNo.equals(data.getsNo());
+    }
 }

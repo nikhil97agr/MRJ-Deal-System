@@ -10,6 +10,7 @@ import java.awt.print.PrinterException;
 import java.util.Calendar;
 import java.util.Date;
 import java.awt.Color;
+import java.text.SimpleDateFormat;
 
 /*
  *
@@ -23,13 +24,15 @@ public class OutputPrinter implements Printable {
     String brokersPan;
     String receiversPan;
     String address;
+    String brokerAddress;
 
-    public OutputPrinter(DealData data, String brokerageAccount, String address, String brokersPan, String receiversPan) {
+    public OutputPrinter(DealData data, String brokerageAccount, String address, String brokersPan, String receiversPan, String brokerAddress) {
         this.data = data;
         this.address = address;
         this.brokerageAccount = brokerageAccount;
         this.brokersPan = brokersPan;
         this.receiversPan = receiversPan;
+        this.brokerAddress = brokerAddress;
     }
 
     @Override
@@ -41,7 +44,7 @@ public class OutputPrinter implements Printable {
 
         // Calculate the line height
         Font heading = new Font("Arial Rounded MT", Font.BOLD, 17);
-        Font font = new Font("Arial Rounded MT", Font.PLAIN, 14);
+        Font font = new Font("Arial Rounded MT", Font.PLAIN, 10);
         Font font2 = new Font("Arial Rounded MT", Font.PLAIN, 12);
         FontMetrics metrics = graphics.getFontMetrics(font);
         int lineHeight = metrics.getHeight();
@@ -69,20 +72,20 @@ public class OutputPrinter implements Printable {
         g.setFont(heading);
         g.drawString(line1, x, y);
         String line11 = " Ph. Off. 2701976-77 Resi.2402500 Mob.94250-65542, 99260-10008";
-        g.setFont(font);
+        g.setFont(font2);
 
         g.drawString(line11, x + 6 * line1.length(), y);
-
+        g.setFont(font);
         y += 5;
-        g.drawLine(initX, y, initX + 540, y);
+        g.drawLine(initX, y, initX + 545, y);
         y += lineHeight + 5;
         g.setFont(font);
-        String line2 = "Receiver: " + data.getToName();
+        String line2 = "Giver: " + data.getFromName();
 
         g.drawString(line2, x, y);
         y += lineHeight + 5;
         String line3 = "Address:  " + address;
-        while (line3.length() < 80) {
+        while (line3.length() < 125) {
             line3 += " ";
         }
         line3 = line3 + "PAN No.: " + receiversPan;
@@ -90,24 +93,24 @@ public class OutputPrinter implements Printable {
         g.drawString(line3, x, y);
         y += lineHeight + 5;
 
-        String line41 = "Amount ₹" + data.getNet();
+        String line41 = "Amount \u20B9" + data.getAmount();
 
-        while (line41.length() < 22) {
+        while (line41.length() < 30) {
             line41 += " ";
         }
 
         String line42 = "Month " + calculateDuration();
-        while (line42.length() < 15) {
+        while (line42.length() < 20) {
             line42 += " ";
         }
 
         String line43 = "Rate " + data.getRate() + "%";
-        while (line43.length() < 15) {
+        while (line43.length() < 20) {
             line43 += " ";
         }
 
-        String line44 = "Interest ₹" + data.getInterest();
-        while (line44.length() < 22) {
+        String line44 = "Interest \u20B9" + data.getInterest();
+        while (line44.length() < 30) {
             line44 += " ";
         }
 
@@ -118,8 +121,8 @@ public class OutputPrinter implements Printable {
 
         y += lineHeight + 5;
 
-        String line5 = "From: " + data.getFromDate();
-        while (line5.length() < 22) {
+        String line5 = "From: " + new SimpleDateFormat("dd-MM-yyyy").format(new Date(data.getFromDate()));
+        while (line5.length() < 30) {
             line5 += " ";
         }
         line5 += "Broker: " + data.getBrokerName();
@@ -128,26 +131,28 @@ public class OutputPrinter implements Printable {
 
         y += lineHeight + 5;
 
-        String line61 = "To: " + data.getToDate();
-        while (line61.length() < 24) {
+        String line61 = "To: " + new SimpleDateFormat("dd-MM-yyyy").format(new Date(data.getToDate()));
+        while (line61.length() < 32) {
             line61 += " ";
         }
 
-        String line62 = "Broker Amount ₹" + data.getBrokerNet();
-        while (line62.length() < 30) {
+        String line62 = "Broker Amount \u20B9" + data.getBrokerNet();
+        while (line62.length() < 40) {
             line62 += " ";
         }
-        line62 += "PAN No.: " + brokersPan;
+        line62 += "Broker PAN No.: " + brokersPan;
 
         String line6 = line61 + line62;
 
         g.drawString(line6, x, y);
-
+        y+=lineHeight+5;
+        String line8 = "Broker Address: "+brokerAddress;
+        g.drawString(line8, x, y);
         y += lineHeight + 5;
-        String line7 = "Mr. " + data.getFromName();
+        String line7 = "Mr. " + data.getToName();
         g.drawString(line7, x, y);
 
-        g.drawRect(initX, initY - 10, initX + 540, y + 10);
+        g.drawRect(initX, initY - 10, initX + 540, y + 5);
         return PAGE_EXISTS;
 
     }
@@ -224,41 +229,5 @@ public class OutputPrinter implements Printable {
         return String.valueOf(month);
 
     }
-
-    //old format
-    //        g.drawString(line1, x + 160, y);    //MRJ
-//        y += 5;
-//        g.drawLine(initX, y, initX + 410, y);   //separator
-//        y += lineHeight + 5;
-//        font = new Font("Arial Rounded MT", Font.PLAIN, 12);
-//        g.setFont(font);
-//        g.drawString(line3, x, y);
-//        g.drawString(line5, x + 250, y);
-//        y += lineHeight + 5;
-//        g.drawString(line2, x+250, y);
-//        g.drawString(line10, x, y);
-//        y += lineHeight + 5;
-//        g.drawString(line12, x, y);
-//        font = new Font("Arial Rounded MT", Font.BOLD, 12);
-//        g.setFont(font);
-//
-//   
-//        font = new Font("Arial Rounded MT", Font.PLAIN, 12);
-//        g.setFont(font);
-//        g.drawString(line4, x + 250, y);
-//
-//        y += lineHeight + 5;
-//        g.drawString(line11, x, y);
-//        g.drawString(line6, x + 250, y);
-//
-//        y += lineHeight + 5;
-//        g.drawString(line13, x, y);
-//        g.drawString(line8, x + 250, y);
-//
-//        y += lineHeight + 5;
-//        g.drawString(line7,x, y);
-//        y += 2 * lineHeight;
-//
-//        g.drawString(line9, x, y);
-//        
+    
 }
