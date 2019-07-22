@@ -1,0 +1,1248 @@
+package accountinfo;
+
+import java.awt.Desktop;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+/*
+ *
+ * @author RIDDLE
+ * 
+ */
+public class DealEntry extends javax.swing.JFrame {
+
+    String month;
+    String day;
+    private List<DealData> dealData;
+    private HashMap<String, DealData> deals;
+    private List<AccountData> accountData;
+    private String sNo;
+    private String date;
+    private String fromDate;
+    private String toDate;
+    private String amount;
+    private String rate;
+    private String interest;
+    private String tds;
+    private String net;
+    private DataOutputStream outputStream;
+    private boolean isedit = false;
+
+    public DealEntry() throws IOException {
+
+        initComponents();
+        dateInput.setVisible(false);
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, 3);
+        Date todayDate = new Date();
+        Date laterDate = cal.getTime();
+        dateInput.setDate(todayDate);
+        fromDateInput.setDate(todayDate);
+        toDateInput.setDate(laterDate);
+        setTitle("Data Entry");
+        dealData = new ArrayList();
+        accountData = new ArrayList();
+
+        brokerInterestInput.setEditable(false);
+        brokerNetInput.setEditable(false);
+        brokerTdsInput.setEditable(false);
+        netInput.setEditable(false);
+        interestInput.setEditable(false);
+        tdsInput.setEditable(false);
+        sNoInput.setEditable(false);
+        sNoInput.setText(String.valueOf(dealData.size() + 1));
+
+    }
+
+    public DealEntry(List<DealData> dealData, List<AccountData> accountData, HashMap<String, DealData> deals) {
+        initComponents();
+        dateInput.setVisible(false);
+        setTitle("Data Entry");
+        if (dealData == null) {
+            this.dealData = new ArrayList();
+            this.deals = new HashMap();
+        } else {
+            this.dealData = dealData;
+            this.deals = deals;
+        }
+        if (accountData == null) {
+            this.accountData = new ArrayList();
+        } else {
+            this.accountData = accountData;
+        }
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, 3);
+        Date todayDate = new Date();
+        Date laterDate = cal.getTime();
+        dateInput.setDate(todayDate);
+        fromDateInput.setDate(todayDate);
+        toDateInput.setDate(laterDate);
+        netInput.setEditable(false);
+        brokerInterestInput.setEditable(false);
+        brokerNetInput.setEditable(false);
+        brokerTdsInput.setEditable(false);
+        interestInput.setEditable(false);
+        tdsInput.setEditable(false);
+        try {
+            readAccountDetails();
+        } catch (IOException ex) {
+            Logger.getLogger(DealEntry.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        sNoInput.setEditable(false);
+        sNoInput.setText(String.valueOf(dealData.size() + 1));
+        addListener();
+
+    }
+
+    public DealEntry(DealData data, List<DealData> dealData, List<AccountData> accountData, HashMap<String, DealData> deals) throws IOException {
+        initComponents();
+        
+        
+        dateInput.setVisible(false);
+        this.dealData = dealData;
+        this.accountData = accountData;
+        this.deals = deals;
+        netInput.setEditable(false);
+        brokerInterestInput.setEditable(false);
+        brokerNetInput.setEditable(false);
+        brokerTdsInput.setEditable(false);
+        interestInput.setEditable(false);
+        tdsInput.setEditable(false);
+
+        readAccountDetails();
+
+        updateUI(data);
+        addListener();
+
+    }
+
+    private void setDate(String day, String month) {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fromDateInput.getDate());
+
+        if (!day.isEmpty() && isDigit(day)) {
+            calendar.add(Calendar.DAY_OF_WEEK, Integer.valueOf(day));
+        }
+        if (!month.isEmpty() && isDigit(month)) {
+            calendar.add(Calendar.MONTH, Integer.valueOf(month));
+        }
+
+        toDateInput.setDate(calendar.getTime());
+
+    }
+
+    /*
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        sNoLabel = new javax.swing.JLabel();
+        dealLabel = new javax.swing.JLabel();
+        sNoInput = new javax.swing.JTextField();
+        brokerageLabel = new javax.swing.JLabel();
+        brokerageAccountList = new javax.swing.JComboBox<>();
+        status = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        backButton = new javax.swing.JButton();
+        printButton = new javax.swing.JButton();
+        searchButton = new javax.swing.JButton();
+        saveButton = new javax.swing.JButton();
+        newDeal = new javax.swing.JButton();
+        addAccount = new javax.swing.JButton();
+        fromDateLabel = new javax.swing.JLabel();
+        fromDateInput = new com.toedter.calendar.JDateChooser();
+        monthsLabel = new javax.swing.JLabel();
+        durationMonth = new javax.swing.JTextField();
+        durationDay = new javax.swing.JTextField();
+        daysLabel = new javax.swing.JLabel();
+        toDateLabel = new javax.swing.JLabel();
+        toDateInput = new com.toedter.calendar.JDateChooser();
+        toList = new javax.swing.JComboBox<>();
+        toLabel = new javax.swing.JLabel();
+        fromList = new javax.swing.JComboBox<>();
+        fromLabel = new javax.swing.JLabel();
+        amountInput = new javax.swing.JTextField();
+        amountLabel = new javax.swing.JLabel();
+        rateLabel = new javax.swing.JLabel();
+        rateInput = new javax.swing.JTextField();
+        interestLabel = new javax.swing.JLabel();
+        interestInput = new javax.swing.JTextField();
+        tdsLabel = new javax.swing.JLabel();
+        tdsInput = new javax.swing.JTextField();
+        netLabel = new javax.swing.JLabel();
+        netInput = new javax.swing.JTextField();
+        dateInput = new com.toedter.calendar.JDateChooser();
+        rateLabel1 = new javax.swing.JLabel();
+        brokerRateInput = new javax.swing.JTextField();
+        interestLabel1 = new javax.swing.JLabel();
+        brokerInterestInput = new javax.swing.JTextField();
+        tdsLabel1 = new javax.swing.JLabel();
+        brokerTdsInput = new javax.swing.JTextField();
+        netLabel1 = new javax.swing.JLabel();
+        brokerNetInput = new javax.swing.JTextField();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
+        setResizable(false);
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        sNoLabel.setBackground(new java.awt.Color(0, 0, 0));
+        sNoLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        sNoLabel.setText("S. No.");
+        jPanel1.add(sNoLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 10, 100, 32));
+
+        dealLabel.setFont(new java.awt.Font("Dialog", 1, 16)); // NOI18N
+        dealLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        dealLabel.setText("DEAL ENTRY");
+        jPanel1.add(dealLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 110, 36));
+        jPanel1.add(sNoInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 10, 83, 32));
+
+        brokerageLabel.setBackground(new java.awt.Color(0, 0, 0));
+        brokerageLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        brokerageLabel.setText("BROKERAGE ACCOUNT");
+        jPanel1.add(brokerageLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 190, -1, 32));
+
+        brokerageAccountList.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        brokerageAccountList.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Account" }));
+        brokerageAccountList.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                brokerageAccountListItemStateChanged(evt);
+            }
+        });
+        jPanel1.add(brokerageAccountList, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 190, 211, 32));
+
+        status.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        status.setForeground(new java.awt.Color(0, 153, 0));
+        jPanel1.add(status, new org.netbeans.lib.awtextra.AbsoluteConstraints(781, 13, 61, 23));
+
+        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        backButton.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        backButton.setText("BACK");
+        backButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backButtonActionPerformed(evt);
+            }
+        });
+        jPanel5.add(backButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 20, 80, 23));
+
+        printButton.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        printButton.setText("PRINT");
+        printButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                printButtonActionPerformed(evt);
+            }
+        });
+        jPanel5.add(printButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 20, -1, -1));
+
+        searchButton.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        searchButton.setText("SEARCH");
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
+        jPanel5.add(searchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 20, -1, -1));
+
+        saveButton.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        saveButton.setText("SAVE");
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveData(evt);
+            }
+        });
+        jPanel5.add(saveButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 20, 154, 24));
+
+        newDeal.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        newDeal.setText("NEW DEAL");
+        newDeal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newDealActionPerformed(evt);
+            }
+        });
+        jPanel5.add(newDeal, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 20, -1, -1));
+
+        addAccount.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        addAccount.setText("Add Account");
+        addAccount.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addAccount(evt);
+            }
+        });
+        jPanel5.add(addAccount, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 20, -1, -1));
+
+        jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 550, 760, 60));
+
+        fromDateLabel.setBackground(new java.awt.Color(0, 0, 0));
+        fromDateLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        fromDateLabel.setText("FROM DATE");
+        jPanel1.add(fromDateLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 60, 135, 29));
+
+        fromDateInput.setDateFormatString("dd/MM/yyyy");
+        fromDateInput.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                fromDateInputPropertyChange(evt);
+            }
+        });
+        jPanel1.add(fromDateInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 60, 211, 29));
+
+        monthsLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        monthsLabel.setText("Months");
+        jPanel1.add(monthsLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 60, 50, -1));
+
+        durationMonth.setText("3");
+        jPanel1.add(durationMonth, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 80, 50, -1));
+
+        durationDay.setText("0");
+        jPanel1.add(durationDay, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 80, 50, -1));
+
+        daysLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        daysLabel.setText("Days");
+        jPanel1.add(daysLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 60, 50, -1));
+
+        toDateLabel.setBackground(new java.awt.Color(0, 0, 0));
+        toDateLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        toDateLabel.setText("Due DATE");
+        jPanel1.add(toDateLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 60, 135, 28));
+
+        toDateInput.setDateFormatString("dd/MM/yyyy");
+        toDateInput.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                toDateInputPropertyChange(evt);
+            }
+        });
+        jPanel1.add(toDateInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 60, 160, 28));
+
+        toList.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        toList.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Account" }));
+        jPanel1.add(toList, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 130, 211, 31));
+
+        toLabel.setBackground(new java.awt.Color(0, 0, 0));
+        toLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        toLabel.setText("RECEIVER");
+        jPanel1.add(toLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 130, 135, 33));
+
+        fromList.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        fromList.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Account" }));
+        jPanel1.add(fromList, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 130, 211, 31));
+
+        fromLabel.setBackground(new java.awt.Color(0, 0, 0));
+        fromLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        fromLabel.setText("GIVER");
+        jPanel1.add(fromLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 130, 135, 33));
+
+        amountInput.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        amountInput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                amountInputActionPerformed(evt);
+            }
+        });
+        jPanel1.add(amountInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 240, 220, 29));
+
+        amountLabel.setBackground(new java.awt.Color(0, 0, 0));
+        amountLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        amountLabel.setText("Amount");
+        jPanel1.add(amountLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 240, -1, 29));
+
+        rateLabel.setBackground(new java.awt.Color(0, 0, 0));
+        rateLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        rateLabel.setText("RATE");
+        jPanel1.add(rateLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 290, 50, 32));
+
+        rateInput.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        rateInput.setText("1.1");
+        rateInput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rateInputActionPerformed(evt);
+            }
+        });
+        jPanel1.add(rateInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 330, 130, 32));
+
+        interestLabel.setBackground(new java.awt.Color(0, 0, 0));
+        interestLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        interestLabel.setText("INTEREST");
+        jPanel1.add(interestLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 290, 70, 32));
+
+        interestInput.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        interestInput.setText("0.0");
+        interestInput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                interestInputActionPerformed(evt);
+            }
+        });
+        jPanel1.add(interestInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 330, 130, 32));
+
+        tdsLabel.setBackground(new java.awt.Color(0, 0, 0));
+        tdsLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        tdsLabel.setText("TDS");
+        jPanel1.add(tdsLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 290, 50, 32));
+
+        tdsInput.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        tdsInput.setText("0.0");
+        jPanel1.add(tdsInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 330, 130, 32));
+
+        netLabel.setBackground(new java.awt.Color(0, 0, 0));
+        netLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        netLabel.setText("NET AMOUNT");
+        jPanel1.add(netLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 290, 90, 32));
+
+        netInput.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        netInput.setText("0.0");
+        jPanel1.add(netInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 330, 130, 32));
+
+        dateInput.setDate(new java.util.Date(1560492430000L));
+        dateInput.setDateFormatString("dd/MM/yyyy "); // NOI18N
+        jPanel1.add(dateInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 240, 110, 27));
+
+        rateLabel1.setBackground(new java.awt.Color(0, 0, 0));
+        rateLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        rateLabel1.setText("BROKER RATE");
+        jPanel1.add(rateLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 400, 90, 32));
+
+        brokerRateInput.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        brokerRateInput.setText("0.15");
+        brokerRateInput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                brokerRateInputActionPerformed(evt);
+            }
+        });
+        jPanel1.add(brokerRateInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 440, 130, 32));
+
+        interestLabel1.setBackground(new java.awt.Color(0, 0, 0));
+        interestLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        interestLabel1.setText("BROKER INTEREST");
+        jPanel1.add(interestLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(272, 400, 120, 32));
+
+        brokerInterestInput.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        brokerInterestInput.setText("0.0");
+        brokerInterestInput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                brokerInterestInputActionPerformed(evt);
+            }
+        });
+        jPanel1.add(brokerInterestInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 440, 130, 32));
+
+        tdsLabel1.setBackground(new java.awt.Color(0, 0, 0));
+        tdsLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        tdsLabel1.setText("BROKER TDS");
+        jPanel1.add(tdsLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 400, 110, 32));
+
+        brokerTdsInput.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        brokerTdsInput.setText("0.0");
+        jPanel1.add(brokerTdsInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 440, 130, 32));
+
+        netLabel1.setBackground(new java.awt.Color(0, 0, 0));
+        netLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        netLabel1.setText("BROKER NET AMOUNT");
+        jPanel1.add(netLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 400, 140, 32));
+
+        brokerNetInput.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        brokerNetInput.setText("0.0");
+        jPanel1.add(brokerNetInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 440, 130, 32));
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 956, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        pack();
+        setLocationRelativeTo(null);
+    }// </editor-fold>//GEN-END:initComponents
+
+    //add a new account
+    private void addAccount(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAccount
+
+        new AccountEntry(this.accountData, this.dealData).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_addAccount
+
+    //jump back to the dashboard
+    private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+        try {
+            new dash_board(this.accountData, this.dealData).setVisible(true);
+        } catch (IOException ex) {
+            Logger.getLogger(DealEntry.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.dispose();
+    }//GEN-LAST:event_backButtonActionPerformed
+
+    private void printButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printButtonActionPerformed
+        printData();
+    }//GEN-LAST:event_printButtonActionPerformed
+
+    //search for the data of given S.No.
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        isedit = true;
+        String sNo = JOptionPane.showInputDialog(this, "Enter S.No.", null, JOptionPane.INFORMATION_MESSAGE);
+        if (sNo == null) {
+            return;
+        }
+        if (sNo.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "S.No. Required!!");
+            clearInputs();
+            return;
+        }
+        for (DealData data : dealData) {
+
+            if (data.getsNo().equals(sNo) && (data.getStatus().equals(Status.VOID) || data.getStatus().equals(Status.HOLD))) {
+                JOptionPane.showMessageDialog(this, "Data is on Hold!!!");
+                clearInputs();
+                return;
+            }
+            if (data.getsNo().equals(sNo) && data.getStatus() != Status.VOID && data.getStatus() != Status.HOLD) {
+                try {
+                    updateUI(data);
+                } catch (IOException ex) {
+                    Logger.getLogger(DealEntry.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                return;
+            }
+        }
+        clearInputs();
+        JOptionPane.showMessageDialog(this, "Record Not Found!!");
+    }//GEN-LAST:event_searchButtonActionPerformed
+
+    //save new deal data to the file
+    private void saveData(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveData
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+
+        sNo = sNoInput.getText();
+        amount = amountInput.getText();
+        rate = rateInput.getText();
+        interest = interestInput.getText();
+        tds = tdsInput.getText();
+        net = netInput.getText();
+        int brok = brokerageAccountList.getSelectedIndex();
+        int from = fromList.getSelectedIndex();
+        int to = toList.getSelectedIndex();
+        String brokerName = (String) brokerageAccountList.getSelectedItem();
+        String fromName = (String) fromList.getSelectedItem();
+        String toName = (String) toList.getSelectedItem();
+        String brokerRate = brokerRateInput.getText();
+        String brokerInterest = brokerInterestInput.getText();
+        String brokerTds = brokerTdsInput.getText();
+        String brokerNet = brokerNetInput.getText();
+
+        if (brok == 0 || to == 0 || from == 0) {
+            JOptionPane.showMessageDialog(this, "Select Valid Accounts");
+            return;
+        }
+        if (sNo.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Fields Empty");
+            return;
+        }
+        if (dateInput.getDate() != null) {
+            date = dateFormat.format(dateInput.getDate());
+
+        }
+        if (fromDateInput.getDate() != null) {
+            fromDate = dateFormat.format(fromDateInput.getDate());
+
+        }
+        if (toDateInput.getDate() != null) {
+            toDate = dateFormat.format(toDateInput.getDate());
+
+        }
+
+        if (date.isEmpty() && date == null) {
+            JOptionPane.showMessageDialog(this, "Fields Empty");
+            return;
+        }
+        if (toDate.isEmpty() || toDate == null) {
+            JOptionPane.showMessageDialog(this, "Fields Empty");
+            return;
+        }
+        if (fromDate.isEmpty() || fromDate == null) {
+            JOptionPane.showMessageDialog(this, "Fields Empty");
+            return;
+        }
+        if (amount.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Fields Empty");
+            return;
+        }
+        if (interest.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Fields Empty");
+            return;
+        }
+        if (rate.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Fields Empty");
+            return;
+        }
+        if (tds.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Fields Empty");
+            return;
+        }
+        if (!isDigit(interest) || !isDigit(rate) || !isDigit(tds) || !isDigit(amount)) {
+            JOptionPane.showMessageDialog(this, "Invalid Input", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        File dataFile = new File("deal data.mno");
+        if (!dataFile.exists()) {
+            try {
+                dataFile.createNewFile();
+            } catch (IOException ex) {
+            }
+        }
+        String data = date + ":" + fromDate + ":" + toDate + ":" + amount + ":" + rate + ":" + interest + ":" + tds + ":" + net + ":" + Status.ACTIVE.toString() + ":" + brokerName + "-" + brok + ":" + toName + "-" + to + ":" + fromName + "-" + from+":"+brokerRate+":"+brokerNet+":"+brokerTds+":"+brokerInterest;
+        DealData dd = new DealData(sNo, date, fromDate, toDate, amount, rate, interest, tds, net, brok, to, from, brokerName, fromName, toName,brokerRate,brokerNet, brokerTds, brokerInterest );
+        BrokerData brokerData = new BrokerData(sNo, brokerName,brokerNet, amount,brokerInterest, brokerTds, brokerRate);
+        System.out.println(data);
+//           System.out.println(data);
+        dealData.add(dd);
+        deals.put(dd.getsNo(), dd);
+
+        byte[] dataByte = data.getBytes();
+        try {
+            writeDataToStream(dataFile, dataByte, sNo);
+            writeBrokerDataToStream(brokerData);
+        } catch (IOException ex) {
+            Logger.getLogger(DealEntry.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        int p = JOptionPane.showConfirmDialog(this, "Want to print?", "Print", JOptionPane.OK_CANCEL_OPTION);
+        System.out.println(p);
+        if (p == 0) {
+            printData();
+        }
+
+        clearInputs();
+
+    }//GEN-LAST:event_saveData
+
+    private void toDateInputPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_toDateInputPropertyChange
+        calculateDuration();
+    }//GEN-LAST:event_toDateInputPropertyChange
+
+    private void newDealActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newDealActionPerformed
+        sNoInput.setEditable(false);
+        clearInputs();
+    }//GEN-LAST:event_newDealActionPerformed
+
+    private void fromDateInputPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_fromDateInputPropertyChange
+        calculateDuration();
+    }//GEN-LAST:event_fromDateInputPropertyChange
+
+    private void brokerageAccountListItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_brokerageAccountListItemStateChanged
+        int index = brokerageAccountList.getSelectedIndex();
+        if (index == 0) {
+            return;
+        }
+
+        for (AccountData data : this.accountData) {
+
+            if (data.getIndex() == index) {
+                if (data.getId() == 0) {
+                    tdsInput.setText("" + 0);
+                } else {
+                    tdsInput.setText("" + 10);
+                }
+                calculateInterest();
+                return;
+            }
+        }
+    }//GEN-LAST:event_brokerageAccountListItemStateChanged
+
+    private void rateInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rateInputActionPerformed
+
+    }//GEN-LAST:event_rateInputActionPerformed
+
+    private void amountInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_amountInputActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_amountInputActionPerformed
+
+    private void interestInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_interestInputActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_interestInputActionPerformed
+
+    private void brokerRateInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_brokerRateInputActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_brokerRateInputActionPerformed
+
+    private void brokerInterestInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_brokerInterestInputActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_brokerInterestInputActionPerformed
+
+    //check if the input string is a number or not
+    private boolean isDigit(String input) {
+        for (char ch : input.toCharArray()) {
+            if (!Character.isDigit(ch) && ch != '.' && ch != ',') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /*
+     * @param args the command line arguments
+     * @throws java.io.IOException
+     * @throws java.io.FileNotFoundException
+     */
+    public static void main(String args[]) throws IOException {
+
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(DealEntry.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        //</editor-fold>
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
+                new DealEntry().setVisible(true);
+            } catch (IOException ex) {
+                Logger.getLogger(DealEntry.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addAccount;
+    private javax.swing.JTextField amountInput;
+    private javax.swing.JLabel amountLabel;
+    private javax.swing.JButton backButton;
+    private javax.swing.JTextField brokerInterestInput;
+    private javax.swing.JTextField brokerNetInput;
+    private javax.swing.JTextField brokerRateInput;
+    private javax.swing.JTextField brokerTdsInput;
+    private javax.swing.JComboBox<String> brokerageAccountList;
+    private javax.swing.JLabel brokerageLabel;
+    private com.toedter.calendar.JDateChooser dateInput;
+    private javax.swing.JLabel daysLabel;
+    private javax.swing.JLabel dealLabel;
+    private javax.swing.JTextField durationDay;
+    private javax.swing.JTextField durationMonth;
+    private com.toedter.calendar.JDateChooser fromDateInput;
+    private javax.swing.JLabel fromDateLabel;
+    private javax.swing.JLabel fromLabel;
+    private javax.swing.JComboBox<String> fromList;
+    private javax.swing.JTextField interestInput;
+    private javax.swing.JLabel interestLabel;
+    private javax.swing.JLabel interestLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JLabel monthsLabel;
+    private javax.swing.JTextField netInput;
+    private javax.swing.JLabel netLabel;
+    private javax.swing.JLabel netLabel1;
+    private javax.swing.JButton newDeal;
+    private javax.swing.JButton printButton;
+    private javax.swing.JTextField rateInput;
+    private javax.swing.JLabel rateLabel;
+    private javax.swing.JLabel rateLabel1;
+    private javax.swing.JTextField sNoInput;
+    private javax.swing.JLabel sNoLabel;
+    private javax.swing.JButton saveButton;
+    private javax.swing.JButton searchButton;
+    private javax.swing.JLabel status;
+    private javax.swing.JTextField tdsInput;
+    private javax.swing.JLabel tdsLabel;
+    private javax.swing.JLabel tdsLabel1;
+    private com.toedter.calendar.JDateChooser toDateInput;
+    private javax.swing.JLabel toDateLabel;
+    private javax.swing.JLabel toLabel;
+    private javax.swing.JComboBox<String> toList;
+    // End of variables declaration//GEN-END:variables
+
+    //write data to the file 
+    private void writeDataToStream(File dataFile, byte[] dataByte, String sNo) throws FileNotFoundException, IOException {
+
+        if(!dataFile.exists())
+        {
+            dataFile.createNewFile();
+        }
+        outputStream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(dataFile, true)));
+
+        outputStream.writeUTF(sNo);
+        dataByte = new CipherData().encrypter(dataByte);
+        outputStream.writeInt(dataByte.length);
+        outputStream.write(dataByte);
+
+        outputStream.flush();
+        outputStream.close();
+        JOptionPane.showMessageDialog(this, "Saved!!");
+
+    }
+
+    //clear all hte input fields
+    private void clearInputs() {
+        sNoInput.setText(String.valueOf(deals.size() + 1));
+        amountInput.setText("");
+        interestInput.setText("");
+        rateInput.setText("1.1");
+        netInput.setText("");
+        tdsInput.setText("0");
+        fromList.setSelectedIndex(0);
+        toList.setSelectedIndex(0);
+        brokerageAccountList.setSelectedIndex(0);
+        fromDateInput.setDate(new Date());
+        dateInput.setDate(new Date());
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, 3);
+        toDateInput.setDate(cal.getTime());
+        status.setText("");
+        brokerRateInput.setText("0.0");
+    }
+
+    //update the account list according to self accounts
+    private void readAccountDetails() throws FileNotFoundException, IOException {
+
+        if (accountData == null || accountData.isEmpty()) {
+            return;
+        }
+        int index = 1;
+        for (AccountData data : accountData) {
+
+            if ((dash_board.mode == Mode.Hello && data.getId() != 0) || dash_board.mode == Mode.Open) {
+
+                if (data.isIsSelf()) {
+                    brokerageAccountList.addItem(data.getName());
+                } else {
+                    fromList.addItem(data.getName());
+                    toList.addItem(data.getName());
+                }
+                data.setIndex(index);
+                index++;
+            }
+        }
+    }
+
+    //update the UI for the given data
+    private void updateUI(DealData data) throws IOException {
+
+        sNoInput.setText(data.getsNo());
+        fromDateInput.setDate(new Date(data.getFromDate()));
+        dateInput.setDate(new Date(data.getDate()));
+        toDateInput.setDate(new Date(data.getToDate()));
+        amountInput.setText(data.getAmount());
+        rateInput.setText(data.getRate());
+        interestInput.setText(data.getInterest());
+        netInput.setText(data.getNet());
+        tdsInput.setText(data.getTds());
+        status.setText(String.valueOf(data.getStatus()));
+        brokerageAccountList.setSelectedIndex(data.getBrok());
+        fromList.setSelectedIndex(data.getFrom());
+        toList.setSelectedIndex(data.getTo());
+        brokerInterestInput.setText(data.getBrokerInterest());
+        brokerNetInput.setText(data.getBrokerNet());
+        brokerTdsInput.setText(data.getBrokerTds());
+        brokerRateInput.setText(data.getBrokerRate());
+
+    }
+
+    private void addListener() {
+        durationMonth.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                setDate(durationDay.getText(), durationMonth.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                setDate(durationDay.getText(), durationMonth.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                setDate(durationDay.getText(), durationMonth.getText());
+
+            }
+        });
+
+        durationDay.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+
+                setDate(durationDay.getText(), durationMonth.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                setDate(durationDay.getText(), durationMonth.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                setDate(durationDay.getText(), durationMonth.getText());
+            }
+        });
+
+        tdsInput.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                try {
+
+                    interest = interestInput.getText().trim();
+                    tds = tdsInput.getText().trim();
+
+                    int totalNet = Integer.valueOf((interest.isEmpty() ? "0" : interest)) - Integer.valueOf(tds.isEmpty() ? "0" : tds);
+                    netInput.setText("" + totalNet);
+                } catch (NumberFormatException ex) {
+
+                }
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                try {
+                    interest = interestInput.getText();
+                    tds = tdsInput.getText();
+
+                    int totalNet = Integer.valueOf((interest.isEmpty() ? "0" : interest)) - Integer.valueOf(tds.isEmpty() ? "0" : tds);
+                    netInput.setText("" + totalNet);
+                } catch (NumberFormatException ex) {
+                }
+
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                try {
+                    interest = interestInput.getText();
+                    tds = tdsInput.getText();
+
+                    int totalNet = Integer.valueOf((interest.isEmpty() ? "0" : interest)) - Integer.valueOf(tds.isEmpty() ? "0" : tds);
+                    netInput.setText("" + totalNet);
+                } catch (NumberFormatException ex) {
+                }
+
+            }
+        });
+
+        interestInput.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                try {
+                    interest = interestInput.getText();
+                    tds = tdsInput.getText();
+
+                    int totalNet = Integer.valueOf((interest.isEmpty() ? "0" : interest)) - Integer.valueOf(tds.isEmpty() ? "0" : tds);
+                    netInput.setText("" + totalNet);
+                } catch (NumberFormatException ex) {
+                }
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                try {
+                    interest = interestInput.getText();
+                    tds = tdsInput.getText();
+
+                    int totalNet = Integer.valueOf((interest.isEmpty() ? "0" : interest)) - Integer.valueOf(tds.isEmpty() ? "0" : tds);
+                    netInput.setText("" + totalNet);
+                } catch (NumberFormatException ex) {
+                }
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                try {
+                    interest = interestInput.getText();
+                    tds = tdsInput.getText();
+
+                    int totalNet = Integer.valueOf((interest.isEmpty() ? "0" : interest)) - Integer.valueOf(tds.isEmpty() ? "0" : tds);
+                    netInput.setText("" + totalNet);
+                } catch (NumberFormatException ex) {
+                }
+
+            }
+        });
+
+        amountInput.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                calculateInterest();
+                calculateBrokerInterest();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                calculateInterest();
+                calculateBrokerInterest();
+
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+        });
+
+        rateInput.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                calculateInterest();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                calculateInterest();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+
+            }
+        });
+
+        brokerRateInput.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                calculateBrokerInterest();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                calculateBrokerInterest();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+        });
+
+    }
+
+    private void calculateDuration() {
+        Date newDate = toDateInput.getDate();
+        Date oldDate = fromDateInput.getDate();
+        if (oldDate == null || newDate == null) {
+            return;
+        }
+        Calendar fromDate = Calendar.getInstance();
+        Calendar toDate = Calendar.getInstance();
+        fromDate.setTime(oldDate);
+        toDate.setTime(newDate);
+        int increment = 0;
+        int year, month, day;
+        if (fromDate.get(Calendar.DAY_OF_MONTH) > toDate.get(Calendar.DAY_OF_MONTH)) {
+            increment = fromDate.getActualMaximum(Calendar.DAY_OF_MONTH);
+        }
+        // DAY CALCULATION
+        if (increment != 0) {
+            day = (toDate.get(Calendar.DAY_OF_MONTH) + increment) - fromDate.get(Calendar.DAY_OF_MONTH);
+            increment = 1;
+        } else {
+            day = toDate.get(Calendar.DAY_OF_MONTH) - fromDate.get(Calendar.DAY_OF_MONTH);
+        }
+
+        // MONTH CALCULATION
+        if ((fromDate.get(Calendar.MONTH) + increment) > toDate.get(Calendar.MONTH)) {
+            month = (toDate.get(Calendar.MONTH) + 12) - (fromDate.get(Calendar.MONTH) + increment);
+            increment = 1;
+        } else {
+            month = (toDate.get(Calendar.MONTH)) - (fromDate.get(Calendar.MONTH) + increment);
+            increment = 0;
+        }
+
+        // YEAR CALCULATION
+        year = toDate.get(Calendar.YEAR) - (fromDate.get(Calendar.YEAR) + increment);
+
+        month = month + year * 12;
+        try {
+            durationDay.setText(String.valueOf(day));
+            durationMonth.setText(String.valueOf(month));
+        } catch (Exception e) {
+
+        } finally {
+            calculateInterest();
+        }
+
+    }
+    
+    private void writeBrokerDataToStream(BrokerData brokerData) throws IOException
+    {
+        String data =brokerData.getsNo()+":"+brokerData.getBrokerName()+":"+brokerData.getBrokerAmount()+":"+brokerData.getBrokerRate()+":"+brokerData.getBrokerInterest()+":"+brokerData.getBrokerTds()+":"+brokerData.getBrokerNet();
+        File dataFile = new File("BrokerData.mno");
+        if(!dataFile.exists())
+        {
+            dataFile.createNewFile();
+        }
+        
+        outputStream  = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(dataFile, true)));
+        
+        byte [] bytes =  data.getBytes();
+        bytes = new CipherData().encrypter(bytes);
+        outputStream.writeInt(bytes.length);
+        outputStream.write(bytes);
+        outputStream.close();
+    }
+
+    private void printData() {
+        String brokersPan = "";
+        String receiversPan = "";
+        if (sNoInput.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "S.No. Required!!");
+            return;
+        }
+
+        DealData data = null;
+        for (DealData dd : dealData) {
+            if (dd.getsNo().equals(sNoInput.getText())) {
+                data = dd;
+                break;
+            }
+        }
+        String address = "";
+        for(AccountData accData : accountData)
+        {
+            if(data.getFromName().equals(accData.getName()))
+            {
+                address = accData.getAddress();
+            }
+            if (data.getToName().equals(accData.getName())) {
+                receiversPan = accData.getPan();
+            }
+            if(data.getBrokerName().equals(accData.getName()))
+            {
+                brokersPan = accData.getPan();
+            }
+            
+            if(!address.isEmpty()&&!receiversPan.isEmpty()&&!brokersPan.isEmpty())
+            {
+                break;
+            }
+        }
+        if (data == null) {
+            JOptionPane.showMessageDialog(this, "Record Not Found!!");
+            clearInputs();
+            return;
+        }
+
+ 
+        String brokerageAccount = (String) brokerageAccountList.getSelectedItem();
+        PrinterJob job = PrinterJob.getPrinterJob();
+        job.setPrintable(new OutputPrinter(data, brokerageAccount.equals("Select Account") ? "null" : brokerageAccount, address,brokersPan, receiversPan));
+        boolean doPrint = job.printDialog();
+        if (doPrint) {
+            try {
+                job.print();
+                String dest = data.getsNo();
+
+                Desktop.getDesktop().open(new File("C:\\Users\\Lenovo\\Desktop\\abc.pdf"));
+            } catch (PrinterException e) {
+            } catch (IOException ex) {
+                Logger.getLogger(DealEntry.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    private void calculateBrokerInterest() {
+        DecimalFormat df = new DecimalFormat(".##");
+
+        double amount1 = 0.0;
+        double rate1 = 0.0;
+        double interest1;
+        double tds1;
+        double net1;
+
+        double duration = 0.0;
+        if (!amountInput.getText().isEmpty() && isDigit(amountInput.getText())) {
+            amount1 = Float.valueOf(amountInput.getText());
+        }
+
+        if (!brokerRateInput.getText().isEmpty() && isDigit(brokerRateInput.getText())) {
+            rate1 = Float.parseFloat(brokerRateInput.getText());
+        }
+
+        if (!durationMonth.getText().isEmpty() && isDigit(durationMonth.getText())) {
+            duration = Float.valueOf(durationMonth.getText());
+        }
+
+        if (!durationDay.getText().isEmpty() && isDigit(durationDay.getText())) {
+            duration = duration + Float.valueOf(durationDay.getText()) / 31.0f;
+        }
+
+        interest1 = (amount1 * rate1 * duration) / 100f;
+        brokerInterestInput.setText("" + df.format(interest1));
+
+        tds1 = (interest1 * 10f) / 100f;
+        brokerTdsInput.setText("" + df.format(tds1));
+        net1 = interest1 - tds1;
+        brokerNetInput.setText("" + df.format(net1));
+    }
+
+    private void calculateInterest() {
+        DecimalFormat df = new DecimalFormat(".##");
+        double amount1 = 0.0;
+        double rate1 = 0.0;
+        double interest1;
+        double tds1;
+        double net1;
+
+        double duration = 0.0;
+        if (!amountInput.getText().isEmpty() && isDigit(amountInput.getText())) {
+            amount1 = Float.valueOf(amountInput.getText());
+        }
+
+        if (!rateInput.getText().isEmpty() && isDigit(rateInput.getText())) {
+            rate1 = Float.parseFloat(rateInput.getText());
+        }
+
+        if (!durationMonth.getText().isEmpty() && isDigit(durationMonth.getText())) {
+            duration = Float.valueOf(durationMonth.getText());
+        }
+
+        if (!durationDay.getText().isEmpty() && isDigit(durationDay.getText())) {
+            duration = duration + Float.valueOf(durationDay.getText()) / 31.0f;
+        }
+//        System.out.println("Duration :"+duration);
+//        System.out.println("Amount :"+amount1);
+        interest1 = (amount1 * rate1 * duration) / 100f;
+//        System.out.println("Interest :"+interest1);
+        interestInput.setText("" + df.format(interest1));
+
+        tds1 = (interest1 * 10f) / 100f;
+        tdsInput.setText("" + df.format(tds1));
+        net1 = interest1 - tds1;
+        netInput.setText("" + df.format(net1));
+    }
+
+}
