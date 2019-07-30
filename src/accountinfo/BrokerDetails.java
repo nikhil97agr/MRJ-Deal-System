@@ -313,6 +313,7 @@ public class BrokerDetails extends javax.swing.JFrame {
             }
 
             workbook.write(stream);
+          
             stream.close();
 
             Desktop.getDesktop().open(new File("Brokers Data.xls"));

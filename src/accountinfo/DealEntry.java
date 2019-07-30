@@ -1176,12 +1176,8 @@ public class DealEntry extends javax.swing.JFrame {
         if (doPrint) {
             try {
                 job.print();
-                String dest = data.getsNo();
-
-                Desktop.getDesktop().open(new File("C:\\Users\\Lenovo\\Desktop\\abc.pdf"));
+//                Desktop.getDesktop().open(new File("C:\\Users\\Lenovo\\Desktop\\abc.pdf"));
             } catch (PrinterException e) {
-            } catch (IOException ex) {
-                Logger.getLogger(DealEntry.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

@@ -25,6 +25,8 @@ public class AccountEntry extends javax.swing.JFrame {
     private boolean isSelf;
     private List<AccountData> accountData;
     private final List<DealData> dealData;
+    private Mode mode = null;
+    private int index;
 
     public AccountEntry(List accountData, List dealData) {
         initComponents();
@@ -35,6 +37,20 @@ public class AccountEntry extends javax.swing.JFrame {
             this.accountData = accountData;
         }
         this.dealData = dealData;
+    }
+
+    public AccountEntry(List<AccountData> accountData, Mode mode, int index) {
+        initComponents();
+        this.accountData = accountData;
+        this.dealData = null;
+        this.mode = mode;
+        this.index = index;
+        
+        nameInput.setText(accountData.get(index).getName());
+        addressInput.setText(accountData.get(index).getAddress());
+        panInput.setText(accountData.get(index).getPan());
+        selfCheck.setSelected(accountData.get(index).isIsSelf());
+        
     }
 
     /**
@@ -156,8 +172,18 @@ public class AccountEntry extends javax.swing.JFrame {
             return;
         }
 
+        if (mode != null) {
+            accountData.get(index).setName(name);
+            accountData.get(index).setAddress(address);
+            accountData.get(index).setPan(pan);
+            accountData.get(index).setIsSelf(isSelf);
+            this.dispose();
+            new showAccountdetails(accountData).setVisible(true);
+            return;
+        }
+
         File file = new File("account data.mno");
-    
+
         System.out.println(file.exists());
         if (!file.exists()) {
             try {
@@ -182,7 +208,7 @@ public class AccountEntry extends javax.swing.JFrame {
             }
         }
         data = data + ":" + accountData.getId();
-        
+
         this.accountData.add(accountData);
         try {
             writeToFile(file, data);
@@ -200,7 +226,11 @@ public class AccountEntry extends javax.swing.JFrame {
     //jump back to the previous window
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         try {
-            new dash_board(this.accountData, this.dealData).setVisible(true);
+            if (mode != null) {
+                new showAccountdetails(accountData).setVisible(true);
+            } else {
+                new dash_board(this.accountData, this.dealData).setVisible(true);
+            }
         } catch (IOException ex) {
             Logger.getLogger(AccountEntry.class.getName()).log(Level.SEVERE, null, ex);
         }

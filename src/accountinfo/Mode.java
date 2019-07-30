@@ -12,6 +12,7 @@ package accountinfo;
 public enum Mode {
     Hello,
     Open,
-    Locked;
+    Locked,
+    Edit;
     
 }

@@ -5,22 +5,17 @@
  */
 package accountinfo;
 
-import static accountinfo.dash_board.mode;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -28,35 +23,35 @@ import javax.swing.table.DefaultTableModel;
  * @author DELL
  */
 public class showAccountdetails extends javax.swing.JFrame {
-    int clickCount = 0;
-    long seconds;
-    Thread thread = null;
- private DefaultTableModel model1;
-  private List<AccountData> accountData;
-  private List<DealData> dealData;
-  public static Mode mode;
-   private DataInputStream inputStream;
+
+    private List<AccountData> accountData;
+
     private DataOutputStream outputStream;
+    private DefaultTableModel tableModel;
+
     /**
      * Creates new form showAccountdetails
      */
-    public showAccountdetails() {
-        
+    public showAccountdetails(List<AccountData> accountData) {
+
         initComponents();
-          try {
+        this.accountData = accountData;
 
-           mode=Mode.Hello;    
-              model1 = (DefaultTableModel)jTable2.getModel();
-           accountData = new ArrayList();
-          
-          readAccountData();
-          setTableListener();
-          createAccountList();
-           
-        } catch (IOException e) {
-        }
+        createTable();
+        addTableListener();
+        addWindowListener();
 
-       
+    }
+
+    private void addWindowListener() {
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                updateFile();
+            }
+            
+
+        });
     }
 
     /**
@@ -71,7 +66,7 @@ public class showAccountdetails extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        accountTable = new javax.swing.JTable();
         back = new javax.swing.JButton();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -89,7 +84,7 @@ public class showAccountdetails extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        accountTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -112,7 +107,7 @@ public class showAccountdetails extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(accountTable);
 
         back.setText("BACK");
         back.addActionListener(new java.awt.event.ActionListener() {
@@ -147,8 +142,44 @@ public class showAccountdetails extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void updateFile() {
+        File file = new File("account data.mno");
+        File tempFile = new File("temp.mno");
+        try {
+
+            //super.windowClosing(e);
+            outputStream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(tempFile)));
+
+            accountData.forEach(accData -> {
+                try {
+                    String data = accData.getName() + ":" + accData.getAddress() + ":" + accData.getPan() + ":" + accData.isIsSelf() + ":" + accData.getId();
+
+                    byte[] bytes = new CipherData().encrypter(data.getBytes());
+                    outputStream.writeInt(bytes.length);
+                    outputStream.write(bytes);
+                    outputStream.flush();
+                } catch (IOException ex) {
+                }
+
+            });
+        } catch (FileNotFoundException ex) {
+        } finally {
+            try {
+                outputStream.close();
+                if (file.exists()) {
+                    file.delete();
+
+                }
+
+                tempFile.renameTo(file);
+            } catch (IOException ex) {
+            }
+        }
+    }
     private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed
-  new dash_board().setVisible(true);
+        updateFile();
+        
+        new dash_board().setVisible(true);
         this.dispose();
         // TODO add your handling code here:
     }//GEN-LAST:event_backActionPerformed
@@ -180,108 +211,55 @@ public class showAccountdetails extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new showAccountdetails().setVisible(true);
+    }
+
+    private void addTableListener() {
+        tableModel = (DefaultTableModel) accountTable.getModel();
+
+        if (accountData == null || accountData.isEmpty()) {
+            return;
+        }
+
+        accountData.forEach(accData -> {
+            Object obj[] = {accData.getName(), accData.getAddress(), accData.getPan()};
+            tableModel.addRow(obj);
+        });
+    }
+
+    private void createTable() {
+        accountTable.getSelectionModel().addListSelectionListener(e -> {
+            if (e.getValueIsAdjusting()) {
+                return;
+            }
+            int row = accountTable.getSelectedRow();
+            if(row<0)
+            {
+                return;
+            }
+            String options[] = {"Edit", "Deleted"};
+            int n = JOptionPane.showOptionDialog(null, null, "Choose an Option!!", JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+
+            if (n == 0) {
+                updateFile();
+                this.dispose();
+                new AccountEntry(accountData, Mode.Edit, row).setVisible(true);
+            } else if (n == 1) {
+                System.out.println(row);
+                accountData.remove(row);
+                tableModel.removeRow(row);
+            } else {
+                return;
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable accountTable;
     private javax.swing.JButton back;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
     // End of variables declaration//GEN-END:variables
-private void readAccountData() throws IOException {
-        File file = new File("account data.mno");
 
-        if (!file.exists()) {
-            return;
-        }
-        inputStream = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));
-        while (inputStream.available() > 0) {
-
-            int dataLength = inputStream.readInt();
-            byte[] dataBytes = new byte[dataLength];
-            inputStream.read(dataBytes, 0, dataLength);
-            String data[] = new CipherData().decrypter(dataBytes).split(":");
-            AccountData accountData = new AccountData();
-            accountData.setName(data[0]);
-            accountData.setAddress(data[1]);
-            accountData.setPan(data[2]);
-            accountData.setIsSelf(Boolean.parseBoolean(data[3]));
-            accountData.setId(Integer.valueOf(data[4]));
-            this.accountData.add(accountData);
-        }
-//        System.out.println(this.accountData);
-        inputStream.close();
-
-    }
-private void createAccountList() {
-
-      
-        accountData.forEach((data) -> {
-           
-                int isself;
-                int Id;
-                String name;
-                String address;
-                String pan;
-                
-               Id = data.getId();
-               name=data.getName();
-               address=data.getAddress();
-               pan=data.getPan();
-                if(!data.isIsSelf()){
-                Object obj[] = {name,address,pan};
-                model1.addRow(obj);}
-        });
-
-    }
- private void setTableListener() {
-           
-      
-        jTable2.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
-            if (!e.getValueIsAdjusting()) {
-                return;
-            }
-
-            int row =jTable2.getSelectedRow();
-            if (row < 0) {
-                return;
-            }
-            //get the data for the selected row
-            for (AccountData data : accountData)
-            {
-                
-                if (data.getName().equals((String) jTable2.getValueAt(row, 0))) {
-                    
-             Object[] options = {"View"};
-                    int n = JOptionPane.showOptionDialog(null, null, "Choose an Option!!", JOptionPane.DEFAULT_OPTION,
-                            JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-                    jTable2.removeRowSelectionInterval(row, row);
-                    if (n < 0) {
-                        return;
-                    }
-                    switch (n) {
-                        case 0: {
-                            try {
-                                dispose();
-                                new ShowAccountData(data,accountData,dealData).setVisible(true);
-                            } catch (IOException ex) {
-                                Logger.getLogger(dash_board.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            break; 
-                 
-                        
-                }
-                }
-                }
-            }
-        });
-    }
- 
 }

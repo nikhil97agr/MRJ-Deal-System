@@ -16,13 +16,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -49,15 +46,8 @@ public class dash_board extends javax.swing.JFrame {
     private DefaultTableModel model;
     private SimpleDateFormat format;
 
-    /**
-     * Creates new form dash_board
-     */
     public dash_board() {
         initComponents();
-//         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-//screenSize.getHeight();
-// screenSize.getWidth();
-//     this.setSize(screenSize);
 
         try {
             format = new SimpleDateFormat("dd/MM/yyyy");
@@ -80,6 +70,8 @@ public class dash_board extends javax.swing.JFrame {
 
         modeLabel.setText(mode.toString());
     }
+    
+   
 
     public dash_board(List accountData, List <DealData>dealData) throws IOException {
         initComponents();
@@ -295,13 +287,13 @@ public class dash_board extends javax.swing.JFrame {
 
     private void viewaccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewaccountActionPerformed
         dispose();
-        new showAccountdetails().setVisible(true);
+        new showAccountdetails(this.accountData).setVisible(true);
         // TODO add your handling code here:
     }//GEN-LAST:event_viewaccountActionPerformed
 
     private void headerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_headerMouseClicked
         clickCount++;
-        if (mode != Mode.Hello) {
+        if (mode == Mode.Hello) {
             if (clickCount == 2) {
                 long diff = (new Date().getTime() - seconds) / 1000;
                 if (diff > 0) {
@@ -311,7 +303,6 @@ public class dash_board extends javax.swing.JFrame {
                 }
                 JPasswordField pf = new JPasswordField();
                 int passwordPane = JOptionPane.showConfirmDialog(null, pf, "Enter Password", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-
                 if (passwordPane == JOptionPane.OK_OPTION) {
                     String password = pf.getText();
                     if (password.equals("admin@mrjdeal")) {

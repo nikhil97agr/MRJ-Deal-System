@@ -9,7 +9,6 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.util.Calendar;
 import java.util.Date;
-import java.awt.Color;
 import java.text.SimpleDateFormat;
 
 /*
@@ -45,6 +44,7 @@ public class OutputPrinter implements Printable {
         // Calculate the line height
         Font heading = new Font("Arial Rounded MT", Font.BOLD, 17);
         Font font = new Font("Arial Rounded MT", Font.PLAIN, 10);
+        Font font1 = new Font("Arial Rounded MT", Font.BOLD, 10);
         Font font2 = new Font("Arial Rounded MT", Font.PLAIN, 12);
         FontMetrics metrics = graphics.getFontMetrics(font);
         int lineHeight = metrics.getHeight();
@@ -81,7 +81,6 @@ public class OutputPrinter implements Printable {
         y += lineHeight + 5;
         g.setFont(font);
         String line2 = "Giver: " + data.getFromName();
-
         g.drawString(line2, x, y);
         y += lineHeight + 5;
         String line3 = "Address:  " + address;

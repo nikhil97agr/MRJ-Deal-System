@@ -41,8 +41,6 @@ public class ShowDateData extends javax.swing.JFrame {
     String prevFrom = "";
     String prevTo = "";
 
-  
-
     public ShowDateData(List<DealData> dealData, List<AccountData> accountData) {
         initComponents();
         tableModel = (DefaultTableModel) dataTable.getModel();
@@ -260,20 +258,20 @@ public class ShowDateData extends javax.swing.JFrame {
         if (fromDate.getDate() == null) {
             return;
         }
-        
-        if(tableModel.getRowCount()==0){
+
+        if (tableModel.getRowCount() == 0) {
             JOptionPane.showMessageDialog(this, "No Data Found!!", null, JOptionPane.INFORMATION_MESSAGE);
         }
-        
+
         Document document = new Document();
         try {
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(new File("Account Detail.pdf")));
             document.open();
-             String header = "Deals from " + new SimpleDateFormat("dd/MM/yyyy").format(fromDate.getDate());
+            String header = "Deals from " + new SimpleDateFormat("dd/MM/yyyy").format(fromDate.getDate());
             if (toDate.getDate() != null) {
                 header = header + " to " + new SimpleDateFormat("dd/MM/yyyy").format(toDate.getDate());
             }
-            header+="\n";
+            header += "\n";
             document.add(new Paragraph(header));
             document.add(new Paragraph(" "));
             PdfPTable table = new PdfPTable(tableModel.getColumnCount());
@@ -295,7 +293,7 @@ public class ShowDateData extends javax.swing.JFrame {
                 table = new PdfPTable(tableModel.getColumnCount());
                 table.setWidthPercentage(100);
                 for (int j = 0; j < tableModel.getColumnCount(); j++) {
-                    String value = (String)tableModel.getValueAt(i,j);
+                    String value = (String) tableModel.getValueAt(i, j);
                     cell = new PdfPCell(new Paragraph(value));
                     table.addCell(cell);
                 }
@@ -307,9 +305,7 @@ public class ShowDateData extends javax.swing.JFrame {
             Desktop.getDesktop().open(new File("Account Detail.pdf"));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ShowDateData.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (DocumentException ex) {
-            Logger.getLogger(ShowDateData.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (DocumentException | IOException ex) {
             Logger.getLogger(ShowDateData.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_generatePdfButtonActionPerformed
@@ -318,8 +314,8 @@ public class ShowDateData extends javax.swing.JFrame {
         if (fromDate.getDate() == null) {
             return;
         }
-        
-        if(tableModel.getRowCount()==0){
+
+        if (tableModel.getRowCount() == 0) {
             JOptionPane.showMessageDialog(this, "No Data Found!!", null, JOptionPane.INFORMATION_MESSAGE);
         }
         Workbook workbook = new HSSFWorkbook();
@@ -401,7 +397,6 @@ public class ShowDateData extends javax.swing.JFrame {
 
     private void inactiveCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_inactiveCheckBoxItemStateChanged
         boolean active = activeCheckBox.isSelected();
-//        System.out.println("inactive check box");
         boolean paid = paidCheckBox.isSelected();
         boolean inactive = inactiveCheckBox.isSelected();
         boolean hold = holdCheckBox.isSelected();
@@ -477,7 +472,6 @@ public class ShowDateData extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-  
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -506,7 +500,7 @@ public class ShowDateData extends javax.swing.JFrame {
         for (DealData data : dealData) {
             if (data.getStatus().equals(Status.ACTIVE)) {
                 Object obj[] = {data.getsNo(), data.getFromDate(), data.getToDate(), data.getBrokerName(),
-                    data.getAmount(), data.getRate(), data.getInterest(), data.getTds(), data.getNet(),data.getFromName(),data.getToName()};
+                    data.getAmount(), data.getRate(), data.getInterest(), data.getTds(), data.getNet(), data.getFromName(), data.getToName()};
 
                 tableModel.addRow(obj);
             }
@@ -516,10 +510,10 @@ public class ShowDateData extends javax.swing.JFrame {
     ///update the table according to filter used
     private void updateTable(boolean active, boolean paid, boolean hold, boolean inactive, Date fromDate, Date toDate) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        
-        if(fromDate!=null&&toDate!=null){
+
+        if (fromDate != null && toDate != null) {
             fromDate = new Date(dateFormat.format(fromDate));
-        toDate = new Date(dateFormat.format(toDate));
+            toDate = new Date(dateFormat.format(toDate));
         }
         if (tableModel == null) {
             return;
@@ -531,12 +525,11 @@ public class ShowDateData extends javax.swing.JFrame {
         }
 //        System.out.println(tableModel.getRowCount());
         tableModel.setRowCount(0);
-        
+
         boolean result = false;
         //if sorted by date
         if (byDate.isSelected()) {
             for (DealData dealData : this.dealData) {
-                
 
                 if ((active && dealData.getStatus().equals(Status.ACTIVE)) || (paid && dealData.getStatus().equals(Status.PAID))
                         || (hold && dealData.getStatus().equals(Status.HOLD)) || (inactive && dealData.getStatus().equals(Status.INACTIVE))) {
@@ -578,12 +571,11 @@ public class ShowDateData extends javax.swing.JFrame {
             }
         }
 
-
         //if sorted by to date
         if (byToDate.isSelected()) {
-            
+
             for (DealData dealData : this.dealData) {
-            
+
                 if ((active && dealData.getStatus().equals(Status.ACTIVE)) || (paid && dealData.getStatus().equals(Status.PAID))
                         || (hold && dealData.getStatus().equals(Status.HOLD)) || (inactive && dealData.getStatus().equals(Status.INACTIVE))) {
 
@@ -603,11 +595,9 @@ public class ShowDateData extends javax.swing.JFrame {
         }
     }
 
-
-
     private void insertData(DealData dealData) {
         Object obj[] = {dealData.getsNo(), dealData.getFromDate(), dealData.getToDate(), dealData.getBrokerName(), dealData.getAmount(),
-            dealData.getRate(), dealData.getInterest(), dealData.getTds(), dealData.getNet(),dealData.getFromName(),dealData.getToName()};
+            dealData.getRate(), dealData.getInterest(), dealData.getTds(), dealData.getNet(), dealData.getFromName(), dealData.getToName()};
         tableModel.addRow(obj);
     }
 }
