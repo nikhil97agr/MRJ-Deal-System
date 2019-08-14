@@ -137,14 +137,14 @@ public class dash_board extends javax.swing.JFrame {
 
             },
             new String [] {
-                "DueDate", "Amount", "Receiver", "Giver", "FromDate"
+                "S.No.", "DueDate", "Amount", "Receiver", "Giver", "FromDate"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -396,7 +396,7 @@ private void createList() {
 
                 amount = dd.getAmount();
 
-                Object obj[] = {todate, amount, to, from, fromdate};
+                Object obj[] = {dd.getsNo(),todate, amount, to, from, fromdate};
                 model.addRow(obj);
             }
 
@@ -470,6 +470,8 @@ private void createList() {
             accountData.setPan(data[2]);
             accountData.setIsSelf(Boolean.parseBoolean(data[3]));
             accountData.setId(Integer.valueOf(data[4]));
+            accountData.setMobile(data[5]);
+            accountData.setEmail(data[6]);
             this.accountData.add(accountData);
         }
 //        System.out.println(this.accountData);
@@ -520,7 +522,8 @@ private void createList() {
             //get the data for the selected row
             for (DealData data : dealData) {
 
-                if (format.format(new Date(data.getToDate())).equals((String) expiredDealTable.getValueAt(row, 0))) {
+//                if (format.format(new Date(data.getToDate())).equals((String) expiredDealTable.getValueAt(row, 0))) {
+                    if(data.getsNo().equals((String)expiredDealTable.getValueAt(row, 0))&&!data.getStatus().equals(Status.PAID) && !data.getStatus().equals(Status.HOLD) && !data.getStatus().equals(Status.INACTIVE)){
 
                     Object[] options = {"View", "Renew", "Paid", "Hold"};
                     int n = JOptionPane.showOptionDialog(null, null, "Choose an Option!!", JOptionPane.DEFAULT_OPTION,

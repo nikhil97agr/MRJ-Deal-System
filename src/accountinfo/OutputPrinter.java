@@ -71,7 +71,7 @@ public class OutputPrinter implements Printable {
         String line1 = "             MRJ";
         g.setFont(heading);
         g.drawString(line1, x, y);
-        String line11 = " Ph. Off. 2701976-77 Resi.2402500 Mob.94250-65542, 99260-10008";
+        String line11 = " Ph. Off. 2701976-77 Resi.2402500 Mob.94250-65542, 7000877576, 99260-10008";
         g.setFont(font2);
 
         g.drawString(line11, x + 6 * line1.length(), y);
@@ -124,22 +124,23 @@ public class OutputPrinter implements Printable {
         while (line5.length() < 30) {
             line5 += " ";
         }
-        line5 += "Broker: " + data.getBrokerName();
-
+        line5 += "To: " + new SimpleDateFormat("dd-MM-yyyy").format(new Date(data.getToDate()));
+        while(line5.length()<62)
+        {
+            line5+=" ";
+        }
+        line5 += "Broker PAN No.: "+brokersPan;
         g.drawString(line5, x, y);
 
         y += lineHeight + 5;
 
-        String line61 = "To: " + new SimpleDateFormat("dd-MM-yyyy").format(new Date(data.getToDate()));
-        while (line61.length() < 32) {
+        String line61 = "Broker: "+data.getBrokerName();
+        while (line61.length() < 50) {
             line61 += " ";
         }
 
         String line62 = "Broker Amount \u20B9" + data.getBrokerNet();
-        while (line62.length() < 40) {
-            line62 += " ";
-        }
-        line62 += "Broker PAN No.: " + brokersPan;
+
 
         String line6 = line61 + line62;
 

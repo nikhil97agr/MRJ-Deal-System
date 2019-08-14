@@ -629,8 +629,7 @@ public class DealEntry extends javax.swing.JFrame {
         String data = date + ":" + fromDate + ":" + toDate + ":" + amount + ":" + rate + ":" + interest + ":" + tds + ":" + net + ":" + Status.ACTIVE.toString() + ":" + brokerName + "-" + brok + ":" + toName + "-" + to + ":" + fromName + "-" + from+":"+brokerRate+":"+brokerNet+":"+brokerTds+":"+brokerInterest;
         DealData dd = new DealData(sNo, date, fromDate, toDate, amount, rate, interest, tds, net, brok, to, from, brokerName, fromName, toName,brokerRate,brokerNet, brokerTds, brokerInterest );
         BrokerData brokerData = new BrokerData(sNo, brokerName,brokerNet, amount,brokerInterest, brokerTds, brokerRate);
-        System.out.println(data);
-//           System.out.println(data);
+
         dealData.add(dd);
         deals.put(dd.getsNo(), dd);
 
@@ -643,7 +642,6 @@ public class DealEntry extends javax.swing.JFrame {
         }
 
         int p = JOptionPane.showConfirmDialog(this, "Want to print?", "Print", JOptionPane.OK_CANCEL_OPTION);
-        System.out.println(p);
         if (p == 0) {
             printData();
         }
@@ -845,18 +843,22 @@ public class DealEntry extends javax.swing.JFrame {
             return;
         }
         int index = 1;
+        int index2 =1;
         for (AccountData data : accountData) {
 
             if ((dash_board.mode == Mode.Hello && data.getId() != 0) || dash_board.mode == Mode.Open) {
 
                 if (data.isIsSelf()) {
                     brokerageAccountList.addItem(data.getName());
+                    data.setIndex(index);
+                    index++;
                 } else {
                     fromList.addItem(data.getName());
                     toList.addItem(data.getName());
+                    data.setIndex(index2);
+                    index2++;
                 }
-                data.setIndex(index);
-                index++;
+
             }
         }
     }
@@ -874,13 +876,38 @@ public class DealEntry extends javax.swing.JFrame {
         netInput.setText(data.getNet());
         tdsInput.setText(data.getTds());
         status.setText(String.valueOf(data.getStatus()));
-        brokerageAccountList.setSelectedIndex(data.getBrok());
-        fromList.setSelectedIndex(data.getFrom());
-        toList.setSelectedIndex(data.getTo());
+
         brokerInterestInput.setText(data.getBrokerInterest());
         brokerNetInput.setText(data.getBrokerNet());
         brokerTdsInput.setText(data.getBrokerTds());
         brokerRateInput.setText(data.getBrokerRate());
+        System.out.println(accountData);
+        for(AccountData accData : this.accountData)
+        {
+            if(accData.getName().equals(data.getFromName())&&!accData.isIsSelf())
+            {
+                fromList.setSelectedIndex(accData.getIndex());
+                break;
+            }
+            
+        }
+        
+        for(AccountData accData : this.accountData)
+        {
+            if(accData.getName().equals(data.getToName())&&!accData.isIsSelf())
+            {
+                toList.setSelectedIndex(accData.getIndex());
+                break;
+            }
+        }
+        for(AccountData accData : this.accountData)
+        {
+            if(accData.getName().equals(data.getBrokerName())&&accData.isIsSelf())
+            {
+                brokerageAccountList.setSelectedIndex(accData.getIndex());
+                break;
+            }
+        }
 
     }
 
@@ -1240,10 +1267,8 @@ public class DealEntry extends javax.swing.JFrame {
         if (!durationDay.getText().isEmpty() && isDigit(durationDay.getText())) {
             duration = duration + Float.valueOf(durationDay.getText()) / 31.0f;
         }
-//        System.out.println("Duration :"+duration);
-//        System.out.println("Amount :"+amount1);
+
         interest1 = (amount1 * rate1 * duration) / 100f;
-//        System.out.println("Interest :"+interest1);
         interestInput.setText("" + Math.round(interest1));
         tds1 = (interest1 * 10f) / 100f;
         tdsInput.setText("" + Math.round(tds1));

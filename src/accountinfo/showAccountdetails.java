@@ -152,7 +152,7 @@ public class showAccountdetails extends javax.swing.JFrame {
 
             accountData.forEach(accData -> {
                 try {
-                    String data = accData.getName() + ":" + accData.getAddress() + ":" + accData.getPan() + ":" + accData.isIsSelf() + ":" + accData.getId();
+                    String data = accData.getName() + ":" + accData.getAddress() + ":" + accData.getPan() + ":" + accData.isIsSelf() + ":" + accData.getId()+":"+accData.getMobile()+":"+accData.getEmail();
 
                     byte[] bytes = new CipherData().encrypter(data.getBytes());
                     outputStream.writeInt(bytes.length);

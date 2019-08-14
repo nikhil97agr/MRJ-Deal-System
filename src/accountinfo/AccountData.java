@@ -14,14 +14,32 @@ public class AccountData {
     private boolean isSelf;
     private int id;
     private int index = -1;
+    private String mobile;
+    private String email;
 
-    public AccountData(String name, String address, String pan, boolean isSelf) {
+    public AccountData(String name, String address, String pan, boolean isSelf, String mobile, String email) {
         this.name = name;
         this.address = address;
         this.pan = pan;
         this.isSelf = isSelf;
         this.id = 1;
 
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
     
     

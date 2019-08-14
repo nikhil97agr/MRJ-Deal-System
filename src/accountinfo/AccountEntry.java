@@ -28,6 +28,7 @@ public class AccountEntry extends javax.swing.JFrame {
     private Mode mode = null;
     private int index;
 
+
     public AccountEntry(List accountData, List dealData) {
         initComponents();
         setTitle("Account Entry");
@@ -74,6 +75,10 @@ public class AccountEntry extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         backButton = new javax.swing.JButton();
+        emailInput = new javax.swing.JLabel();
+        mobileInput = new javax.swing.JLabel();
+        mobileInputTF = new javax.swing.JTextField();
+        emailInputTF = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -87,36 +92,36 @@ public class AccountEntry extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel1.setText("Name");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(85, 69, -1, -1));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 70, -1, -1));
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel3.setText("Address");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(85, 121, -1, -1));
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 220, -1, -1));
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel4.setText("PAN");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(85, 241, -1, -1));
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 340, -1, -1));
 
         nameInput.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         nameInput.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
-        jPanel1.add(nameInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(191, 69, 183, -1));
+        jPanel1.add(nameInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 70, 183, -1));
 
         addressInput.setColumns(20);
         addressInput.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         addressInput.setRows(5);
         addressInput.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
-        jPanel1.add(addressInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(191, 120, 183, 103));
+        jPanel1.add(addressInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 220, 183, 103));
 
         panInput.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         panInput.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
-        jPanel1.add(panInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(188, 241, 186, -1));
+        jPanel1.add(panInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 340, 186, -1));
 
         selfCheck.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jPanel1.add(selfCheck, new org.netbeans.lib.awtextra.AbsoluteConstraints(188, 278, -1, -1));
+        jPanel1.add(selfCheck, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 380, -1, -1));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel5.setText("Self");
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(85, 278, -1, -1));
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 380, -1, -1));
 
         jButton1.setText("Save");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -124,7 +129,7 @@ public class AccountEntry extends javax.swing.JFrame {
                 saveData(evt);
             }
         });
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(188, 328, -1, -1));
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 430, -1, -1));
 
         backButton.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         backButton.setText("BACK");
@@ -134,7 +139,23 @@ public class AccountEntry extends javax.swing.JFrame {
                 backButtonActionPerformed(evt);
             }
         });
-        jPanel1.add(backButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 328, 52, 23));
+        jPanel1.add(backButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 430, 52, 23));
+
+        emailInput.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        emailInput.setText("Mobile No.");
+        jPanel1.add(emailInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 160, -1, 20));
+
+        mobileInput.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        mobileInput.setText("Email");
+        jPanel1.add(mobileInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 120, -1, -1));
+
+        mobileInputTF.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        mobileInputTF.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
+        jPanel1.add(mobileInputTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 160, 183, -1));
+
+        emailInputTF.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        emailInputTF.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
+        jPanel1.add(emailInputTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 120, 183, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -144,7 +165,9 @@ public class AccountEntry extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 492, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -158,7 +181,8 @@ public class AccountEntry extends javax.swing.JFrame {
         address = addressInput.getText();
         pan = panInput.getText();
         isSelf = selfCheck.isSelected();
-
+        String email = emailInputTF.getText();
+        String mobile = mobileInputTF.getText();
         if (name.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Fields required");
             return;
@@ -168,6 +192,14 @@ public class AccountEntry extends javax.swing.JFrame {
             return;
         }
         if (pan.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Fields required");
+            return;
+        }
+        if (email.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Fields required");
+            return;
+        }
+        if (mobile.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Fields required");
             return;
         }
@@ -192,8 +224,8 @@ public class AccountEntry extends javax.swing.JFrame {
                 Logger.getLogger(AccountEntry.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        String data = name + ":" + address + ":" + pan + ":" + isSelf;
-        AccountData accountData = new AccountData(name, address, pan, isSelf);
+        String data = name + ":" + address + ":" + pan + ":" + isSelf+":"+mobile+":"+email;
+        AccountData accountData = new AccountData(name, address, pan, isSelf, mobile , email);
         boolean result = false;
         if (isSelf) {
             for (AccountData accData : this.accountData) {
@@ -273,6 +305,8 @@ public class AccountEntry extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea addressInput;
     private javax.swing.JButton backButton;
+    private javax.swing.JLabel emailInput;
+    private javax.swing.JTextField emailInputTF;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -280,6 +314,8 @@ public class AccountEntry extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel mobileInput;
+    private javax.swing.JTextField mobileInputTF;
     private javax.swing.JTextField nameInput;
     private javax.swing.JTextField panInput;
     private javax.swing.JCheckBox selfCheck;
@@ -303,6 +339,8 @@ public class AccountEntry extends javax.swing.JFrame {
         panInput.setText("");
         addressInput.setText("");
         selfCheck.setSelected(false);
+        emailInputTF.setText("");
+        mobileInputTF.setText("");
     }
 
 }

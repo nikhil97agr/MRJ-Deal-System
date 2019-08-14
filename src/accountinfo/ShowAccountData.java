@@ -13,7 +13,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -125,14 +124,14 @@ public class ShowAccountData extends javax.swing.JFrame {
 
             },
             new String [] {
-                "S.No. ", "Giver", "Amount", "Rate", "Interest", "TDS", "Brokerage Account"
+                "S.No. ", "Giver", "Due Date", "Amount", "Rate", "Interest", "TDS", "Brokerage Account"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, true, true
+                false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -405,7 +404,7 @@ public class ShowAccountData extends javax.swing.JFrame {
                 if ((active && data.getStatus().equals(Status.ACTIVE)) || (paid && data.getStatus().equals(Status.PAID))
                         || (hold && data.getStatus().equals(Status.HOLD)) || (inactive && data.getStatus().equals(Status.INACTIVE))) {
                     if (data.getFromName().equals(account)) {
-                        Object obj[] = {data.getsNo(), data.getToName(), data.getAmount(), data.getRate(),
+                        Object obj[] = {data.getsNo(), data.getToName(), data.getToDate(), data.getAmount(), data.getRate(),
                             data.getInterest(), data.getTds(), data.getBrokerName()};
 
                         defaultTableModel.addRow(obj);
@@ -420,7 +419,7 @@ public class ShowAccountData extends javax.swing.JFrame {
                 if ((active && data.getStatus().equals(Status.ACTIVE)) || (paid && data.getStatus().equals(Status.PAID))
                         || (hold && data.getStatus().equals(Status.HOLD)) || (inactive && data.getStatus().equals(Status.INACTIVE))) {
                     if (data.getToName().equals(account)) {
-                        Object obj[] = {data.getsNo(), data.getFromName(), data.getAmount(), data.getRate(),
+                        Object obj[] = {data.getsNo(), data.getFromName(), data.getToDate(), data.getAmount(), data.getRate(),
                             data.getInterest(), data.getTds(),data.getBrokerName()};
 
                         defaultTableModel.addRow(obj);
