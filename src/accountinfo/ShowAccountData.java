@@ -124,7 +124,7 @@ public class ShowAccountData extends javax.swing.JFrame {
 
             },
             new String [] {
-                "S.No. ", "Giver", "Due Date", "Amount", "Rate", "Interest", "TDS", "Brokerage Account"
+                "Deal Date", "Giver", "Due Date", "Amount", "Rate", "Interest", "TDS", "Brokerage Account"
             }
         ) {
             Class[] types = new Class [] {
@@ -397,14 +397,13 @@ public class ShowAccountData extends javax.swing.JFrame {
         }
 
         String account = (String) accountsDropDown.getSelectedItem();
-        System.out.println(account);
         if (fromRadioButton.isSelected()) {
             dealData.forEach(data -> {
 
                 if ((active && data.getStatus().equals(Status.ACTIVE)) || (paid && data.getStatus().equals(Status.PAID))
                         || (hold && data.getStatus().equals(Status.HOLD)) || (inactive && data.getStatus().equals(Status.INACTIVE))) {
                     if (data.getFromName().equals(account)) {
-                        Object obj[] = {data.getsNo(), data.getToName(), data.getToDate(), data.getAmount(), data.getRate(),
+                        Object obj[] = {data.getDate(),data.getToName(), data.getToDate(), data.getAmount(), data.getRate(),
                             data.getInterest(), data.getTds(), data.getBrokerName()};
 
                         defaultTableModel.addRow(obj);
@@ -419,7 +418,7 @@ public class ShowAccountData extends javax.swing.JFrame {
                 if ((active && data.getStatus().equals(Status.ACTIVE)) || (paid && data.getStatus().equals(Status.PAID))
                         || (hold && data.getStatus().equals(Status.HOLD)) || (inactive && data.getStatus().equals(Status.INACTIVE))) {
                     if (data.getToName().equals(account)) {
-                        Object obj[] = {data.getsNo(), data.getFromName(), data.getToDate(), data.getAmount(), data.getRate(),
+                        Object obj[] = {data.getDate(), data.getFromName(), data.getToDate(), data.getAmount(), data.getRate(),
                             data.getInterest(), data.getTds(),data.getBrokerName()};
 
                         defaultTableModel.addRow(obj);

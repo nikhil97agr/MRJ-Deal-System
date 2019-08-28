@@ -63,7 +63,6 @@ public class DealEntry extends javax.swing.JFrame {
 
         brokerInterestInput.setEditable(false);
         brokerNetInput.setEditable(false);
-        brokerTdsInput.setEditable(false);
         netInput.setEditable(false);
         interestInput.setEditable(false);
         tdsInput.setEditable(false);
@@ -99,7 +98,6 @@ public class DealEntry extends javax.swing.JFrame {
         netInput.setEditable(false);
         brokerInterestInput.setEditable(false);
         brokerNetInput.setEditable(false);
-        brokerTdsInput.setEditable(false);
         interestInput.setEditable(false);
         tdsInput.setEditable(false);
         try {
@@ -881,7 +879,7 @@ public class DealEntry extends javax.swing.JFrame {
         brokerNetInput.setText(data.getBrokerNet());
         brokerTdsInput.setText(data.getBrokerTds());
         brokerRateInput.setText(data.getBrokerRate());
-        System.out.println(accountData);
+
         for(AccountData accData : this.accountData)
         {
             if(accData.getName().equals(data.getFromName())&&!accData.isIsSelf())

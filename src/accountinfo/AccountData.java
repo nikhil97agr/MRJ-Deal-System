@@ -23,6 +23,8 @@ public class AccountData {
         this.pan = pan;
         this.isSelf = isSelf;
         this.id = 1;
+        this.email = email;
+        this.mobile = mobile;
 
     }
 
@@ -94,12 +96,15 @@ public class AccountData {
     public void setIndex(int index) {
         this.index = index;
     }
+
+    @Override
+    public String toString()
+    {
+        return "{ Name :"+name+", Address :"+address+", Pan :"+pan+", Mobile :"+mobile+", Email :"+email;
+    }
     
     
 
-    @Override
-    public String toString() {
-        return name + ":" + address + ":" + pan + ":" + isSelf + ":" + id;
-    }
+   
 
 }

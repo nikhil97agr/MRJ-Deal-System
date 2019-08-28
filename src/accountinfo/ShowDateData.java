@@ -180,14 +180,14 @@ public class ShowDateData extends javax.swing.JFrame {
 
             },
             new String [] {
-                "S. No.", "From", "To", "Brokerage Account", "Amount", "Rate", "Interest", "TDS", "Net", "Giver", "Reciver"
+                "From", "To", "Brokerage Account", "Amount", "Rate", "Interest", "TDS", "Net", "Giver", "Reciver"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -240,7 +240,7 @@ public class ShowDateData extends javax.swing.JFrame {
         boolean paid = paidCheckBox.isSelected();
         boolean inactive = inactiveCheckBox.isSelected();
         boolean hold = holdCheckBox.isSelected();
-//        System.out.println("From Date property Change");
+
         updateTable(active, paid, hold, inactive, fromDate.getDate(), toDate.getDate());
     }//GEN-LAST:event_fromDatePropertyChange
 
@@ -249,7 +249,7 @@ public class ShowDateData extends javax.swing.JFrame {
         boolean paid = paidCheckBox.isSelected();
         boolean inactive = inactiveCheckBox.isSelected();
         boolean hold = holdCheckBox.isSelected();
-//        System.out.println("To date property change");
+
         updateTable(active, paid, hold, inactive, fromDate.getDate(), toDate.getDate());
     }//GEN-LAST:event_toDatePropertyChange
 
@@ -366,7 +366,7 @@ public class ShowDateData extends javax.swing.JFrame {
 
     //if active check box clicked
     private void activeCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_activeCheckBoxItemStateChanged
-//        System.out.println("active check box");
+ 
         boolean active = activeCheckBox.isSelected();
         boolean paid = paidCheckBox.isSelected();
         boolean inactive = inactiveCheckBox.isSelected();
@@ -379,7 +379,7 @@ public class ShowDateData extends javax.swing.JFrame {
     //if paid check box clicked
     private void paidCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_paidCheckBoxItemStateChanged
         boolean active = activeCheckBox.isSelected();
-//        System.out.println("paid check box");
+
         boolean paid = paidCheckBox.isSelected();
         boolean inactive = inactiveCheckBox.isSelected();
         boolean hold = holdCheckBox.isSelected();
@@ -389,7 +389,7 @@ public class ShowDateData extends javax.swing.JFrame {
     private void holdCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_holdCheckBoxItemStateChanged
         boolean active = activeCheckBox.isSelected();
         boolean paid = paidCheckBox.isSelected();
-//        System.out.println("hold check box");
+
         boolean inactive = inactiveCheckBox.isSelected();
         boolean hold = holdCheckBox.isSelected();
         updateTable(active, paid, hold, inactive, fromDate.getDate(), toDate.getDate());
@@ -404,7 +404,7 @@ public class ShowDateData extends javax.swing.JFrame {
     }//GEN-LAST:event_inactiveCheckBoxItemStateChanged
 
     private void byDateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_byDateMouseClicked
-//        System.out.println("by date mouse clicked");
+
         if (byDate.isSelected()) {
             byFromDate.setSelected(false);
             byToDate.setSelected(false);
@@ -417,7 +417,7 @@ public class ShowDateData extends javax.swing.JFrame {
     }//GEN-LAST:event_byDateMouseClicked
 
     private void byFromDateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_byFromDateMouseClicked
-//        System.out.println("by from date mouse clicked");
+
         if (byFromDate.isSelected()) {
             byDate.setSelected(false);
             byToDate.setSelected(false);
@@ -429,7 +429,7 @@ public class ShowDateData extends javax.swing.JFrame {
     }//GEN-LAST:event_byFromDateMouseClicked
 
     private void byToDateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_byToDateMouseClicked
-//        System.out.println("by to date mouse clicked");
+
         if (byToDate.isSelected()) {
             byFromDate.setSelected(false);
             byDate.setSelected(false);
@@ -499,7 +499,7 @@ public class ShowDateData extends javax.swing.JFrame {
         tableModel.setRowCount(0);
         for (DealData data : dealData) {
             if (data.getStatus().equals(Status.ACTIVE)) {
-                Object obj[] = {data.getsNo(), data.getFromDate(), data.getToDate(), data.getBrokerName(),
+                Object obj[] = {data.getFromDate(), data.getToDate(), data.getBrokerName(),
                     data.getAmount(), data.getRate(), data.getInterest(), data.getTds(), data.getNet(), data.getFromName(), data.getToName()};
 
                 tableModel.addRow(obj);
@@ -523,7 +523,7 @@ public class ShowDateData extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Invalid Request", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-//        System.out.println(tableModel.getRowCount());
+
         tableModel.setRowCount(0);
 
         boolean result = false;
@@ -541,7 +541,7 @@ public class ShowDateData extends javax.swing.JFrame {
 
                     } else {
                         if (fromDate.compareTo(new Date(dealData.getDate())) <= 0 && toDate.compareTo(new Date(dealData.getDate())) >= 0) {
-//                            System.out.println("This runs");
+
                             insertData(dealData);
                         }
                     }
@@ -596,7 +596,7 @@ public class ShowDateData extends javax.swing.JFrame {
     }
 
     private void insertData(DealData dealData) {
-        Object obj[] = {dealData.getsNo(), dealData.getFromDate(), dealData.getToDate(), dealData.getBrokerName(), dealData.getAmount(),
+        Object obj[] = {dealData.getFromDate(), dealData.getToDate(), dealData.getBrokerName(), dealData.getAmount(),
             dealData.getRate(), dealData.getInterest(), dealData.getTds(), dealData.getNet(), dealData.getFromName(), dealData.getToName()};
         tableModel.addRow(obj);
     }

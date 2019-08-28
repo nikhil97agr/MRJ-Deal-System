@@ -5,6 +5,13 @@
  */
 package accountinfo;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.awt.Desktop;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -14,9 +21,17 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 /**
  *
@@ -68,6 +83,8 @@ public class showAccountdetails extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         accountTable = new javax.swing.JTable();
         back = new javax.swing.JButton();
+        generateExcelButton = new javax.swing.JButton();
+        generatePdfButton = new javax.swing.JButton();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -89,14 +106,14 @@ public class showAccountdetails extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Name", "Address", "PAN"
+                "Name", "Mobile", "Email", "Address", "PAN"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -116,6 +133,22 @@ public class showAccountdetails extends javax.swing.JFrame {
             }
         });
 
+        generateExcelButton.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        generateExcelButton.setText("Generate Excel");
+        generateExcelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                generateExcelButtonActionPerformed(evt);
+            }
+        });
+
+        generatePdfButton.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        generatePdfButton.setText("Generate PDF");
+        generatePdfButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                generatePdfButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -126,6 +159,10 @@ public class showAccountdetails extends javax.swing.JFrame {
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 751, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(back, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(104, 104, 104)
+                        .addComponent(generateExcelButton)
+                        .addGap(101, 101, 101)
+                        .addComponent(generatePdfButton)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -135,7 +172,11 @@ public class showAccountdetails extends javax.swing.JFrame {
                 .addGap(31, 31, 31)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(back)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(back)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(generateExcelButton)
+                        .addComponent(generatePdfButton)))
                 .addContainerGap(58, Short.MAX_VALUE))
         );
 
@@ -152,7 +193,7 @@ public class showAccountdetails extends javax.swing.JFrame {
 
             accountData.forEach(accData -> {
                 try {
-                    String data = accData.getName() + ":" + accData.getAddress() + ":" + accData.getPan() + ":" + accData.isIsSelf() + ":" + accData.getId()+":"+accData.getMobile()+":"+accData.getEmail();
+                    String data = accData.getName() + ":" + accData.getAddress() + ":" + accData.getPan() + ":" + accData.isIsSelf() + ":"+accData.getMobile()+":"+accData.getEmail()+":"+accData.getId();
 
                     byte[] bytes = new CipherData().encrypter(data.getBytes());
                     outputStream.writeInt(bytes.length);
@@ -183,6 +224,94 @@ public class showAccountdetails extends javax.swing.JFrame {
         this.dispose();
         // TODO add your handling code here:
     }//GEN-LAST:event_backActionPerformed
+
+    private void generateExcelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateExcelButtonActionPerformed
+
+        if (tableModel.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "No Data Found!!", null, JOptionPane.INFORMATION_MESSAGE);
+        }
+        Workbook workbook = new HSSFWorkbook();
+        try {
+            OutputStream stream = new FileOutputStream("Accounts Details.xls");
+            Sheet sheet = workbook.createSheet("Accounts");
+            int rowCount = 2;
+            Row headerRow = sheet.createRow(0);
+            String header = "Accounts Available";
+
+            headerRow.createCell(2).setCellValue(header);
+            headerRow = sheet.createRow(rowCount);
+            for (int i = 0; i < tableModel.getColumnCount(); i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(tableModel.getColumnName(i));
+            }
+            rowCount++;
+            for (int i = 0; i < tableModel.getRowCount(); i++) {
+                Row row = sheet.createRow(rowCount);
+                rowCount++;
+                for (int j = 0; j < tableModel.getColumnCount(); j++) {
+                    row.createCell(j).setCellValue((String) tableModel.getValueAt(i, j));
+                }
+            }
+
+            for (int i = 0; i < tableModel.getColumnCount(); i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            workbook.write(stream);
+            stream.close();
+
+            Desktop.getDesktop().open(new File("Accounts Details.xls"));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ShowAccountData.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ShowAccountData.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_generateExcelButtonActionPerformed
+
+    private void generatePdfButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generatePdfButtonActionPerformed
+
+
+
+        if (tableModel.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "No Data Found!!", null, JOptionPane.INFORMATION_MESSAGE);
+        }
+
+        Document document = new Document();
+        try {
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(new File("Accounts Details.pdf")));
+            document.open();
+            String header = "Accounts Available";
+
+            document.add(new Paragraph(header));
+            document.add(new Paragraph(" "));
+            PdfPTable table = new PdfPTable(tableModel.getColumnCount());
+            PdfPCell cell = new PdfPCell();
+            for (int i = 0; i < tableModel.getColumnCount(); i++) {
+                cell = new PdfPCell(new Paragraph(tableModel.getColumnName(i)));
+                table.addCell(cell);
+            }
+            table.setWidthPercentage(100);
+            document.add(table);
+            for (int i = 0; i < tableModel.getRowCount(); i++) {
+                table = new PdfPTable(tableModel.getColumnCount());
+                table.setWidthPercentage(100);
+                for (int j = 0; j < tableModel.getColumnCount(); j++) {
+                    String value = (String) tableModel.getValueAt(i, j);
+                    cell = new PdfPCell(new Paragraph(value));
+                    table.addCell(cell);
+                }
+                document.add(table);
+            }
+
+            document.close();
+            writer.close();
+            Desktop.getDesktop().open(new File("Accounts Details.pdf"));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ShowDateData.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DocumentException | IOException ex) {
+            Logger.getLogger(ShowDateData.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_generatePdfButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -221,8 +350,9 @@ public class showAccountdetails extends javax.swing.JFrame {
         }
 
         accountData.forEach(accData -> {
-            Object obj[] = {accData.getName(), accData.getAddress(), accData.getPan()};
+            Object obj[] = {accData.getName(),accData.getMobile(),accData.getEmail(), accData.getAddress(), accData.getPan()};
             tableModel.addRow(obj);
+
         });
     }
 
@@ -245,7 +375,7 @@ public class showAccountdetails extends javax.swing.JFrame {
                 this.dispose();
                 new AccountEntry(accountData, Mode.Edit, row).setVisible(true);
             } else if (n == 1) {
-                System.out.println(row);
+
                 accountData.remove(row);
                 tableModel.removeRow(row);
             } else {
@@ -257,6 +387,8 @@ public class showAccountdetails extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable accountTable;
     private javax.swing.JButton back;
+    private javax.swing.JButton generateExcelButton;
+    private javax.swing.JButton generatePdfButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;

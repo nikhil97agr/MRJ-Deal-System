@@ -80,6 +80,7 @@ public class dash_board extends javax.swing.JFrame {
         sdf = new SimpleDateFormat("dd/MM/yyyy");
         todayDate.setText(sdf.format(new Date()));
         this.accountData = accountData;
+
         deals = new HashMap();
 
         model = (DefaultTableModel) expiredDealTable.getModel();
@@ -469,12 +470,12 @@ private void createList() {
             accountData.setAddress(data[1]);
             accountData.setPan(data[2]);
             accountData.setIsSelf(Boolean.parseBoolean(data[3]));
-            accountData.setId(Integer.valueOf(data[4]));
-            accountData.setMobile(data[5]);
-            accountData.setEmail(data[6]);
+            accountData.setId(Integer.valueOf(data[6]));
+            accountData.setMobile(data[4]);
+            accountData.setEmail(data[5]);
             this.accountData.add(accountData);
         }
-//        System.out.println(this.accountData);
+
         inputStream.close();
 
     }
@@ -486,7 +487,7 @@ private void createList() {
         tempFile.createNewFile();
         outputStream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(tempFile)));
         for (DealData data : dealData) {
-            System.out.println(data);
+ 
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
             String fileData = data.getDate() + ":" + data.getFromDate() + ":" + data.getToDate() + ":"
@@ -498,7 +499,7 @@ private void createList() {
             outputStream.writeInt(dataByte.length);
             outputStream.write(dataByte);
         }
-        outputStream.close();
+        
 
         if (file.exists()) {
             file.delete();

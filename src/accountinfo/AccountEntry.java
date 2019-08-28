@@ -216,7 +216,7 @@ public class AccountEntry extends javax.swing.JFrame {
 
         File file = new File("account data.mno");
 
-        System.out.println(file.exists());
+
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -258,6 +258,7 @@ public class AccountEntry extends javax.swing.JFrame {
     //jump back to the previous window
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         try {
+
             if (mode != null) {
                 new showAccountdetails(accountData).setVisible(true);
             } else {
