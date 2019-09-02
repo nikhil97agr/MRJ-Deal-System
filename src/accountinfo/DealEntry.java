@@ -65,7 +65,6 @@ public class DealEntry extends javax.swing.JFrame {
         brokerNetInput.setEditable(false);
         netInput.setEditable(false);
         interestInput.setEditable(false);
-        tdsInput.setEditable(false);
         sNoInput.setEditable(false);
         sNoInput.setText(String.valueOf(dealData.size() + 1));
 
@@ -99,7 +98,6 @@ public class DealEntry extends javax.swing.JFrame {
         brokerInterestInput.setEditable(false);
         brokerNetInput.setEditable(false);
         interestInput.setEditable(false);
-        tdsInput.setEditable(false);
         try {
             readAccountDetails();
         } catch (IOException ex) {
@@ -124,7 +122,6 @@ public class DealEntry extends javax.swing.JFrame {
         brokerNetInput.setEditable(false);
         brokerTdsInput.setEditable(false);
         interestInput.setEditable(false);
-        tdsInput.setEditable(false);
 
         readAccountDetails();
 

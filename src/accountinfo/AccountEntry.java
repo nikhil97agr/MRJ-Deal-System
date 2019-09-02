@@ -69,7 +69,6 @@ public class AccountEntry extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         nameInput = new javax.swing.JTextField();
-        addressInput = new javax.swing.JTextArea();
         panInput = new javax.swing.JTextField();
         selfCheck = new javax.swing.JCheckBox();
         jLabel5 = new javax.swing.JLabel();
@@ -79,6 +78,8 @@ public class AccountEntry extends javax.swing.JFrame {
         mobileInput = new javax.swing.JLabel();
         mobileInputTF = new javax.swing.JTextField();
         emailInputTF = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        addressInput = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -105,12 +106,6 @@ public class AccountEntry extends javax.swing.JFrame {
         nameInput.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         nameInput.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         jPanel1.add(nameInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 70, 183, -1));
-
-        addressInput.setColumns(20);
-        addressInput.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        addressInput.setRows(5);
-        addressInput.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
-        jPanel1.add(addressInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 220, 183, 103));
 
         panInput.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         panInput.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
@@ -157,11 +152,20 @@ public class AccountEntry extends javax.swing.JFrame {
         emailInputTF.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         jPanel1.add(emailInputTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 120, 183, -1));
 
+        addressInput.setColumns(20);
+        addressInput.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        addressInput.setLineWrap(true);
+        addressInput.setRows(5);
+        addressInput.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
+        jScrollPane1.setViewportView(addressInput);
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 210, 180, 100));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -315,6 +319,7 @@ public class AccountEntry extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel mobileInput;
     private javax.swing.JTextField mobileInputTF;
     private javax.swing.JTextField nameInput;
