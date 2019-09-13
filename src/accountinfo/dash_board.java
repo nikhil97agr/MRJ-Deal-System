@@ -45,7 +45,8 @@ public class dash_board extends javax.swing.JFrame {
     private DataOutputStream outputStream;
     private DefaultTableModel model;
     private SimpleDateFormat format;
-
+    private HashMap<Integer, String> tableData;
+    private int rowCount = 0;
     public dash_board() {
         initComponents();
 
@@ -138,14 +139,14 @@ public class dash_board extends javax.swing.JFrame {
 
             },
             new String [] {
-                "S.No.", "DueDate", "Amount", "Receiver", "Giver", "FromDate"
+                "DueDate", "Amount", "Receiver", "Giver", "FromDate"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -373,7 +374,8 @@ public class dash_board extends javax.swing.JFrame {
     private javax.swing.JButton viewaccount;
     // End of variables declaration//GEN-END:variables
 private void createList() {
-
+    tableData = new HashMap();
+    rowCount = 0;
     if(deals==null ||  deals.isEmpty())
     {
         return;
@@ -397,7 +399,9 @@ private void createList() {
 
                 amount = dd.getAmount();
 
-                Object obj[] = {dd.getsNo(),todate, amount, to, from, fromdate};
+                Object obj[] = {todate, amount, to, from, fromdate};
+                tableData.put(rowCount,dd.getsNo());
+                rowCount = rowCount + 1;
                 model.addRow(obj);
             }
 
@@ -484,7 +488,9 @@ private void createList() {
     private void updateFile() throws FileNotFoundException, IOException {
         File file = new File("deal data.mno");
         File tempFile = new File("temp.mno");
-        tempFile.createNewFile();
+        try
+        {
+            tempFile.createNewFile();
         outputStream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(tempFile)));
         for (DealData data : dealData) {
  
@@ -501,6 +507,13 @@ private void createList() {
         }
         
 
+        }
+        catch(Exception ex)
+        {
+            JOptionPane.showMessageDialog(this, "Failed To Update Data", null, JOptionPane.ERROR_MESSAGE);
+            tempFile.delete();
+            return;
+        }
         if (file.exists()) {
             file.delete();
         }
@@ -524,7 +537,7 @@ private void createList() {
             for (DealData data : dealData) {
 
 //                if (format.format(new Date(data.getToDate())).equals((String) expiredDealTable.getValueAt(row, 0))) {
-                    if(data.getsNo().equals((String)expiredDealTable.getValueAt(row, 0))&&!data.getStatus().equals(Status.PAID) && !data.getStatus().equals(Status.HOLD) && !data.getStatus().equals(Status.INACTIVE)){
+                    if(data.getsNo().equals(tableData.get(row))&&!data.getStatus().equals(Status.PAID) && !data.getStatus().equals(Status.HOLD) && !data.getStatus().equals(Status.INACTIVE)){
 
                     Object[] options = {"View", "Renew", "Paid", "Hold"};
                     int n = JOptionPane.showOptionDialog(null, null, "Choose an Option!!", JOptionPane.DEFAULT_OPTION,
