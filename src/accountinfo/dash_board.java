@@ -6,6 +6,8 @@
 package accountinfo;
 
 import static accountinfo.dash_board.mode;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -45,7 +47,7 @@ public class dash_board extends javax.swing.JFrame {
     private DataOutputStream outputStream;
     private DefaultTableModel model;
     private SimpleDateFormat format;
-    private HashMap<Integer, String> tableData;
+    private HashMap<Integer, DealData> tableData;
     private int rowCount = 0;
     public dash_board() {
         initComponents();
@@ -64,7 +66,7 @@ public class dash_board extends javax.swing.JFrame {
             readDealData();
             readAccountData();
             createList();
-            setTableListener();
+//            setTableListener();
             setTitle("MRJ Deal System");
         } catch (IOException e) {
         }
@@ -92,11 +94,10 @@ public class dash_board extends javax.swing.JFrame {
             {
                 deals.put(data.getsNo(), data);
             }
-        }
-        
+        }        
         updateFile();
         createList();
-        setTableListener();
+//        setTableListener();
         setTitle("MRJ Deal System");
         modeLabel.setText(mode.toString());
     }
@@ -121,6 +122,8 @@ public class dash_board extends javax.swing.JFrame {
         viewaccount = new javax.swing.JButton();
         modeLabel = new javax.swing.JLabel();
         showBrokers = new javax.swing.JButton();
+        printButton = new javax.swing.JButton();
+        Options = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -139,14 +142,14 @@ public class dash_board extends javax.swing.JFrame {
 
             },
             new String [] {
-                "DueDate", "Amount", "Receiver", "Giver", "FromDate"
+                "DueDate", "Amount", "Receiver", "Giver", "FromDate", ""
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -205,6 +208,20 @@ public class dash_board extends javax.swing.JFrame {
             }
         });
 
+        printButton.setText("Print");
+        printButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                printButtonActionPerformed(evt);
+            }
+        });
+
+        Options.setText("Options");
+        Options.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                OptionsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -214,7 +231,11 @@ public class dash_board extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(605, 605, 605)
+                        .addGap(443, 443, 443)
+                        .addComponent(Options)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(printButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(todayDate))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 896, Short.MAX_VALUE)))
             .addGroup(layout.createSequentialGroup()
@@ -242,7 +263,10 @@ public class dash_board extends javax.swing.JFrame {
                 .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(todayDate, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(todayDate, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(printButton)
+                        .addComponent(Options)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
@@ -325,6 +349,106 @@ public class dash_board extends javax.swing.JFrame {
         new BrokerDetails((ArrayList) this.dealData).setVisible(true);
     }//GEN-LAST:event_showBrokersActionPerformed
 
+    private void printButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printButtonActionPerformed
+        ArrayList<DealData> printList = new ArrayList();
+        for(int i=0;i<model.getRowCount();i++)
+        {
+            if((boolean)expiredDealTable.getValueAt(i, 5))
+            {
+                printList.add(tableData.get(i));
+            }
+        }
+        if(printList.isEmpty())
+        {
+            JOptionPane.showMessageDialog(this, "No Deals To Print");
+            return;
+        }
+        
+        PrinterJob printerJob = PrinterJob.getPrinterJob();
+        printerJob.setPrintable(new OutputPrinter2((printList), (ArrayList)accountData));
+        if(printerJob.printDialog())
+            try {
+                printerJob.print();
+        } catch (PrinterException ex) {
+            ex.printStackTrace();
+        }
+    }//GEN-LAST:event_printButtonActionPerformed
+
+    private void OptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OptionsActionPerformed
+        
+        HashMap<Integer,DealData> map = new HashMap();
+        for(int i=0;i<model.getRowCount();i++)
+        {
+            if((boolean)expiredDealTable.getValueAt(i, 5))
+            {
+                map.put(i, tableData.get(i));
+            }
+        }
+        
+        if(map.isEmpty())
+        {
+            JOptionPane.showMessageDialog(this, "Select a deal");
+            return;
+        }
+        if(map.size()>1)
+        {
+            JOptionPane.showMessageDialog(this, "Select only one deal");
+            return;
+        }
+        
+        int row = (new ArrayList<Integer>(map.keySet())).get(0);
+        DealData data = map.get(row);
+        if(!data.getStatus().equals(Status.PAID) && !data.getStatus().equals(Status.HOLD) && !data.getStatus().equals(Status.INACTIVE)){
+
+                    Object[] options = {"View", "Renew", "Paid", "Hold"};
+                    int n = JOptionPane.showOptionDialog(null, null, "Choose an Option!!", JOptionPane.DEFAULT_OPTION,
+                            JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+                    expiredDealTable.removeRowSelectionInterval(row, row);
+                    if (n < 0) {
+                        return;
+                    }
+                    switch (n) {
+                        case 0: {
+                            try {
+                                dispose();
+                                new DealEntry(data, dealData, accountData, deals).setVisible(true);
+
+                            } catch (IOException ex) {
+                                Logger.getLogger(dash_board.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            break;
+                        }
+                        case 1: {
+                            try {
+                                data.setStatus(Status.INACTIVE);
+                                dispose();
+                                new DealEntry(data, dealData, accountData, deals).setVisible(true);
+                            } catch (IOException ex) {
+                                Logger.getLogger(dash_board.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            break;
+                        }
+
+                        case 2: {
+                            data.setStatus(Status.PAID);
+                            model.removeRow(row);
+                        }
+                        break;
+
+                        case 3: {
+                            data.setStatus(Status.HOLD);
+                            model.removeRow(row);
+                        }
+                    }
+                    try {
+                        updateFile();
+                    } catch (IOException ex) {
+                        Logger.getLogger(dash_board.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                }
+    }//GEN-LAST:event_OptionsActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -361,12 +485,14 @@ public class dash_board extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Options;
     private javax.swing.JButton addNewAccount;
     private javax.swing.JButton addNewDeal;
     private javax.swing.JTable expiredDealTable;
     private javax.swing.JLabel header;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel modeLabel;
+    private javax.swing.JButton printButton;
     private javax.swing.JButton showAccountData;
     private javax.swing.JButton showBrokers;
     private javax.swing.JButton showDateData;
@@ -399,8 +525,8 @@ private void createList() {
 
                 amount = dd.getAmount();
 
-                Object obj[] = {todate, amount, to, from, fromdate};
-                tableData.put(rowCount,dd.getsNo());
+                Object obj[] = {todate, amount, to, from, fromdate, false};
+                tableData.put(rowCount,dd);
                 rowCount = rowCount + 1;
                 model.addRow(obj);
             }
@@ -413,6 +539,7 @@ private void createList() {
     private void readDealData() throws FileNotFoundException, IOException {
         File file = new File("deal data.mno");
         if (!file.exists()) {
+            System.out.println(1);
             return;
         }
         inputStream = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));
@@ -504,90 +631,23 @@ private void createList() {
             outputStream.writeUTF(data.getsNo());
             outputStream.writeInt(dataByte.length);
             outputStream.write(dataByte);
+            outputStream.flush();
+            
         }
-        
+        outputStream.close();
 
         }
         catch(Exception ex)
         {
             JOptionPane.showMessageDialog(this, "Failed To Update Data", null, JOptionPane.ERROR_MESSAGE);
             tempFile.delete();
+            outputStream.close();
             return;
         }
         if (file.exists()) {
             file.delete();
         }
         tempFile.renameTo(file);
-
     }
 
-    //add table listener when the row is selected
-    private void setTableListener() {
-
-        expiredDealTable.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
-            if (!e.getValueIsAdjusting()) {
-                return;
-            }
-
-            int row = expiredDealTable.getSelectedRow();
-            if (row < 0) {
-                return;
-            }
-            //get the data for the selected row
-            for (DealData data : dealData) {
-
-//                if (format.format(new Date(data.getToDate())).equals((String) expiredDealTable.getValueAt(row, 0))) {
-                    if(data.getsNo().equals(tableData.get(row))&&!data.getStatus().equals(Status.PAID) && !data.getStatus().equals(Status.HOLD) && !data.getStatus().equals(Status.INACTIVE)){
-
-                    Object[] options = {"View", "Renew", "Paid", "Hold"};
-                    int n = JOptionPane.showOptionDialog(null, null, "Choose an Option!!", JOptionPane.DEFAULT_OPTION,
-                            JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-                    expiredDealTable.removeRowSelectionInterval(row, row);
-                    if (n < 0) {
-                        return;
-                    }
-                    switch (n) {
-                        case 0: {
-                            try {
-                                dispose();
-                                new DealEntry(data, dealData, accountData, deals).setVisible(true);
-
-                            } catch (IOException ex) {
-                                Logger.getLogger(dash_board.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            break;
-                        }
-                        case 1: {
-                            try {
-                                data.setStatus(Status.INACTIVE);
-                                dispose();
-                                new DealEntry(data, dealData, accountData, deals).setVisible(true);
-                            } catch (IOException ex) {
-                                Logger.getLogger(dash_board.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            break;
-                        }
-
-                        case 2: {
-                            data.setStatus(Status.PAID);
-                            model.removeRow(row);
-                        }
-                        break;
-
-                        case 3: {
-                            data.setStatus(Status.HOLD);
-                            model.removeRow(row);
-                        }
-                    }
-                    try {
-                        updateFile();
-                    } catch (IOException ex) {
-                        Logger.getLogger(dash_board.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
-                    break;
-                }
-            }
-        });
-    }
 }

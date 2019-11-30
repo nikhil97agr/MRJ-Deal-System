@@ -62,10 +62,8 @@ public class DealEntry extends javax.swing.JFrame {
         setTitle("Data Entry");
         dealData = new ArrayList();
         accountData = new ArrayList();
-
         brokerNetInput.setEditable(false);
         netInput.setEditable(false);
-        tdsInput.setEditable(false);
         sNoInput.setEditable(false);
         sNoInput.setText(String.valueOf(dealData.size() + 1));
 
@@ -96,9 +94,8 @@ public class DealEntry extends javax.swing.JFrame {
         fromDateInput.setDate(todayDate);
         toDateInput.setDate(laterDate);
         netInput.setEditable(false);
-
         brokerNetInput.setEditable(false);
-        tdsInput.setEditable(false);
+
         try {
             readAccountDetails();
         } catch (IOException ex) {
@@ -120,9 +117,6 @@ public class DealEntry extends javax.swing.JFrame {
         netInput.setEditable(false);
 
         brokerNetInput.setEditable(false);
-
-        tdsInput.setEditable(false);
-
         readAccountDetails();
 
         updateUI(data);
@@ -632,7 +626,7 @@ public class DealEntry extends javax.swing.JFrame {
             writeDataToStream(dataFile, dataByte, sNo);
             writeBrokerDataToStream(brokerData);
         } catch (IOException ex) {
-            Logger.getLogger(DealEntry.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
 
         int p = JOptionPane.showConfirmDialog(this, "Want to print?", "Print", JOptionPane.OK_CANCEL_OPTION);
@@ -975,45 +969,16 @@ public class DealEntry extends javax.swing.JFrame {
             @Override
             public void keyReleased(KeyEvent e) {
                 super.keyReleased(e);
-                calculateBrokerRate();
-            }
-
-            private void calculateBrokerRate() {
-                DecimalFormat df = new DecimalFormat(".##");
-                double amount1 = 0.0;
-                double rate1 = 0.0;
-                double interest1 = 0.0;
-                double tds1 = 0.0;
-                double net1 = 0.0;
-
-                double duration = 0.0;
-                if (!amountInput.getText().isEmpty() && isDigit(amountInput.getText())) {
-                    amount1 = Float.valueOf(amountInput.getText());
-                }
-
-                if (!brokerTdsInput.getText().isEmpty() && isDigit(brokerTdsInput.getText())) {
-                    tds1 = Float.parseFloat(brokerTdsInput.getText());
-                }
-                if(!brokerNetInput.getText().isEmpty()&& isDigit(brokerNetInput.getText()))
+                try
                 {
-                    net1 = Float.parseFloat(brokerNetInput.getText());
+                    
+                    double net = Float.parseFloat(brokerInterestInput.getText()) - Float.parseFloat(brokerTdsInput.getText());
+                    brokerNetInput.setText(""+Math.round(net));
+                }catch(NumberFormatException ex)
+                {
+                    brokerNetInput.setText(brokerInterestInput.getText());
                 }
-
-                if (!durationMonth.getText().isEmpty() && isDigit(durationMonth.getText())) {
-                    duration = Float.valueOf(durationMonth.getText());
-                }
-
-                if (!durationDay.getText().isEmpty() && isDigit(durationDay.getText())) {
-                    duration = duration + Float.valueOf(durationDay.getText()) / 31.0f;
-                }
-
-                interest1 = tds1 + net1;
-                rate1 = interest1*100f/(amount1*duration);
-                brokerInterestInput.setText(""+Math.round(interest1));
-                brokerRateInput.setText(""+df.format(rate1));
-
             }
-
         });
 
         brokerInterestInput.addKeyListener(new KeyAdapter() {
@@ -1052,7 +1017,7 @@ public class DealEntry extends javax.swing.JFrame {
                     rate1 = interest1 * 100f / (duration * amount1);
                     brokerRateInput.setText("" + df.format(rate1));
                     tds1 = (interest1 * 10f) / 100f;
-                    brokerTdsInput.setText("" + Math.round(tds1));
+                    brokerTdsInput.setText("" +Math.round(tds1));
                     net1 = interest1 - tds1;
                     brokerNetInput.setText("" + Math.round(net1));
                 } catch (ArithmeticException ex) {
@@ -1109,6 +1074,22 @@ public class DealEntry extends javax.swing.JFrame {
                     netInput.setText("0");
                 }
             }
+        });
+        
+        tdsInput.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                super.keyReleased(e);
+                try
+                {
+                    double net = Float.parseFloat(interestInput.getText()) - Float.parseFloat(tdsInput.getText());
+                    netInput.setText(""+Math.round(net));
+                }catch(NumberFormatException ex)
+                {
+                    netInput.setText(interestInput.getText());
+                }
+            }
+            
         });
 
     }
@@ -1257,12 +1238,12 @@ public class DealEntry extends javax.swing.JFrame {
         }
 
         interest1 = (amount1 * rate1 * duration) / 100f;
-        brokerInterestInput.setText("" + df.format(interest1));
+        brokerInterestInput.setText("" + Math.round(interest1));
 
         tds1 = (interest1 * 10f) / 100f;
-        brokerTdsInput.setText("" + df.format(tds1));
+        brokerTdsInput.setText("" + Math.round(tds1));
         net1 = interest1 - tds1;
-        brokerNetInput.setText("" + df.format(net1));
+        brokerNetInput.setText("" + Math.round(net1));
     }
 
     private void calculateInterest() {
