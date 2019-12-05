@@ -96,9 +96,10 @@ public class OutputPrinter2 implements Printable{
         while (line41.length() < 30) {
             line41 += " ";
         }
-
-        String line42 = "Month " + calculateDuration(data);
-        while (line42.length() < 20) {
+        String duration[] = calculateDuration(data).split("-");
+        System.out.println(duration);
+        String line42 = "Month " + duration[0]+"  Days "+duration[1];
+        while (line42.length() < 30) {
             line42 += " ";
         }
 
@@ -205,8 +206,8 @@ public class OutputPrinter2 implements Printable{
         while (line41.length() < 30) {
             line41 += " ";
         }
-
-         line42 = "Month " + calculateDuration(data1);
+        duration = calculateDuration(data1).split("-");
+         line42 = "Month " + duration[0]+"  Days "+duration[1];
         while (line42.length() < 20) {
             line42 += " ";
         }
@@ -313,8 +314,8 @@ public class OutputPrinter2 implements Printable{
         while (line41.length() < 30) {
             line41 += " ";
         }
-
-         line42 = "Month " + calculateDuration(data2);
+        duration = calculateDuration(data2).split("-");
+         line42 = "Month " + duration[0]+"  Days "+duration[1];
         while (line42.length() < 20) {
             line42 += " ";
         }
@@ -425,8 +426,8 @@ public class OutputPrinter2 implements Printable{
         while (line41.length() < 30) {
             line41 += " ";
         }
-
-         line42 = "Month " + calculateDuration(data3);
+        duration = calculateDuration(data3).split("-");
+         line42 = "Month " + duration[0]+"  Days "+duration[1];
         while (line42.length() < 20) {
             line42 += " ";
         }
@@ -555,7 +556,7 @@ public class OutputPrinter2 implements Printable{
 
         month = month + year * 12;
 
-        return String.valueOf(month);
+        return String.valueOf(month)+"-"+day;
 
     }
     

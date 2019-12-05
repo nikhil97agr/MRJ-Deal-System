@@ -13,6 +13,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -210,6 +212,7 @@ public class ShowAccountData extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "No Data Found!!", null, JOptionPane.INFORMATION_MESSAGE);
             return;
         }
+        long totalAmount = 0;
         Document document = new Document();
         try {
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(new File("Account Data.pdf")));
@@ -229,6 +232,7 @@ public class ShowAccountData extends javax.swing.JFrame {
 
             for (int i = 0; i < defaultTableModel.getRowCount(); i++) {
                 table = new PdfPTable(defaultTableModel.getColumnCount());
+                totalAmount = totalAmount + Long.valueOf((String)defaultTableModel.getValueAt(i, 3));
                 for (int j = 0; j < defaultTableModel.getColumnCount(); j++) {
                     cell = new PdfPCell(new Paragraph((String) defaultTableModel.getValueAt(i, j)));
                     table.addCell(cell);
@@ -238,6 +242,8 @@ public class ShowAccountData extends javax.swing.JFrame {
                 document.add(table);
 
             }
+            System.out.println(totalAmount);
+            document.add(new Paragraph("Total Amount :\u20B9"+totalAmount));
             document.close();
             writer.close();
             Desktop.getDesktop().open(new File("Account Data.pdf"));
@@ -260,6 +266,7 @@ public class ShowAccountData extends javax.swing.JFrame {
         }
         Workbook workbook = new HSSFWorkbook();
         try {
+            long totalAmount = 0;
             OutputStream stream = new FileOutputStream("Account Data.xls");
             Sheet sheet = workbook.createSheet("Accounts");
             int rowCount = 2;
@@ -274,11 +281,13 @@ public class ShowAccountData extends javax.swing.JFrame {
             rowCount++;
             for (int i = 0; i < defaultTableModel.getRowCount(); i++) {
                 Row row = sheet.createRow(rowCount);
+                totalAmount += Long.valueOf((String)defaultTableModel.getValueAt(i, 3));
                 rowCount++;
                 for (int j = 0; j < defaultTableModel.getColumnCount(); j++) {
                     row.createCell(j).setCellValue((String) defaultTableModel.getValueAt(i, j));
                 }
             }
+            sheet.createRow(rowCount+1).createCell(3).setCellValue("Total Amount :\u20B9"+totalAmount);
 
             for (int i = 0; i < defaultTableModel.getColumnCount(); i++) {
                 sheet.autoSizeColumn(i);
@@ -392,6 +401,7 @@ public class ShowAccountData extends javax.swing.JFrame {
 
     private void updateTable(boolean paid, boolean active, boolean hold, boolean inactive) {
         defaultTableModel.setRowCount(0);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         if (accountsDropDown.getSelectedIndex() == 0) {
             return;
         }
@@ -399,11 +409,11 @@ public class ShowAccountData extends javax.swing.JFrame {
         String account = (String) accountsDropDown.getSelectedItem();
         if (fromRadioButton.isSelected()) {
             dealData.forEach(data -> {
-
+                
                 if ((active && data.getStatus().equals(Status.ACTIVE)) || (paid && data.getStatus().equals(Status.PAID))
                         || (hold && data.getStatus().equals(Status.HOLD)) || (inactive && data.getStatus().equals(Status.INACTIVE))) {
                     if (data.getFromName().equals(account)) {
-                        Object obj[] = {data.getDate(),data.getToName(), data.getToDate(), data.getAmount(), data.getRate(),
+                        Object obj[] = {sdf.format(new Date(data.getDate())),data.getToName(), sdf.format(new Date(data.getToDate())), data.getAmount(), data.getRate(),
                             data.getInterest(), data.getTds(), data.getBrokerName()};
 
                         defaultTableModel.addRow(obj);

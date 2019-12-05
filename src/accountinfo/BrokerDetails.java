@@ -39,6 +39,7 @@ public class BrokerDetails extends javax.swing.JFrame {
     ArrayList<DealData> deals = new ArrayList();
     Set<String> brokers = new HashSet();
     DefaultTableModel tableModel;
+    long totalAmount = 0;
 
     public BrokerDetails(ArrayList<DealData> deals) {
         initComponents();
@@ -267,6 +268,7 @@ public class BrokerDetails extends javax.swing.JFrame {
                 document.add(table);
 
             }
+            document.add(new Paragraph("Total Amount :\u20B9"+totalAmount));
             document.close();
             writer.close();
             Desktop.getDesktop().open(new File("Brokers Data.pdf"));
@@ -307,7 +309,7 @@ public class BrokerDetails extends javax.swing.JFrame {
                     row.createCell(j).setCellValue((String) tableModel.getValueAt(i, j));
                 }
             }
-
+            sheet.createRow(rowCount+1).createCell(2).setCellValue("Total Amount :\u20B9"+totalAmount);
             for (int i = 0; i < tableModel.getColumnCount(); i++) {
                 sheet.autoSizeColumn(i);
             }
@@ -421,7 +423,7 @@ public class BrokerDetails extends javax.swing.JFrame {
         }
         
         String broker = (String)brokersList.getSelectedItem();
-        
+        totalAmount = 0;
         for(DealData data : deals)
         {
             if(data.getBrokerName().equals(broker))
@@ -429,7 +431,9 @@ public class BrokerDetails extends javax.swing.JFrame {
                 if((data.getStatus().equals(Status.ACTIVE)&&active)||(data.getStatus().equals(Status.INACTIVE)&&inactive)||
                         (data.getStatus().equals(Status.PAID)&&paid)&&(data.getStatus().equals(Status.HOLD)&&hold))
                 {
-                    Object obj[] = {data.getFromName(), data.getToName(), data.getAmount(), data.getBrokerRate()+"%", data.getBrokerInterest(), data.getBrokerTds(), data.getBrokerNet()};
+                    String brokerAmount = String.valueOf((long)(Double.valueOf(data.getAmount())*0.15)/100);
+                    totalAmount = Long.valueOf(brokerAmount);
+                    Object obj[] = {data.getFromName(), data.getToName(), brokerAmount, data.getBrokerRate()+"%", data.getBrokerInterest(), data.getBrokerTds(), data.getBrokerNet()};
                     tableModel.addRow(obj);
                 }
             }

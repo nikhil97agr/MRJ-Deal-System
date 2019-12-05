@@ -97,8 +97,8 @@ public class OutputPrinter implements Printable {
         while (line41.length() < 30) {
             line41 += " ";
         }
-
-        String line42 = "Month " + calculateDuration();
+        String duration[] = calculateDuration(data).split("-");
+        String line42 = "Month " + duration[0]+"  Days "+duration[1];
         while (line42.length() < 20) {
             line42 += " ";
         }
@@ -189,7 +189,7 @@ public class OutputPrinter implements Printable {
         return result;
     }
 
-    public String calculateDuration() {
+    public String calculateDuration(DealData data) {
         Date newDate = new Date(data.getToDate());
         Date oldDate = new Date(data.getFromDate());
         if (oldDate == null || newDate == null) {
@@ -226,7 +226,7 @@ public class OutputPrinter implements Printable {
 
         month = month + year * 12;
 
-        return String.valueOf(month);
+        return String.valueOf(month)+"-"+day;
 
     }
     
